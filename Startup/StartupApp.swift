@@ -22,11 +22,17 @@ struct StartupApp: App {
             fatalError("Could not create ModelContainer: \(error)")
         }
     }()
+    
+    @State private var auth = Authentication()
 
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .frame(minWidth: 800)
+                .frame(minHeight: 450)
+                .environment(auth)
         }
+        .windowStyle(.hiddenTitleBar)
         .modelContainer(sharedModelContainer)
     }
 }

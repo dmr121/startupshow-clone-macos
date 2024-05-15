@@ -9,51 +9,80 @@ import SwiftUI
 import SwiftData
 
 struct ContentView: View {
+    @Environment(Authentication.self) private var auth
     @Environment(\.modelContext) private var modelContext
     @Query private var items: [Item]
-
+    
+    @State private var tab: Tab? = .movies
+    @State private var searchQuery: String = ""
+    
     var body: some View {
-        NavigationSplitView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-                    } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
-                    }
-                }
-                .onDelete(perform: deleteItems)
+        Group {
+            //            if auth.authToken != nil,
+            //               let expiration = auth.authTokenExpiration,
+            //                expiration > Date() {
+            NavigationSplitView {
+                Sidebar()
+                    .navigationSplitViewColumnWidth(min: 120, ideal: 180, max: 250)
+                    .searchable(text: $searchQuery, placement: .sidebar)
+            } detail: {
+                Text("Select a tab.")
             }
-            .navigationSplitViewColumnWidth(min: 180, ideal: 200)
+            .task {
+                // Get user
+                // get profile data
+            }
             .toolbar {
-                ToolbarItem {
-                    Button(action: addItem) {
+                ToolbarItemGroup(placement: .primaryAction) {
+                    Button(action: {print("HERE")}) {
                         Label("Add Item", systemImage: "plus")
                     }
                 }
             }
-        } detail: {
-            Text("Select an item")
+            //                .transition(.scale)
+            //            } else {
+            //                Welcome()
+            //                    .transition(.scale)
+            //            }
         }
     }
+}
 
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(timestamp: Date())
-            modelContext.insert(newItem)
-        }
-    }
-
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                modelContext.delete(items[index])
+// MARK: Views
+extension ContentView {
+    @ViewBuilder private func Sidebar() -> some View {
+        List(selection: $tab) {
+            Section("Watch") {
+                ForEach(Tab.watch, id: \.self) { tab in
+                    NavigationLink {
+                        switch tab {
+                        case .movies:
+                            Movies()
+                        case .tv:
+                            TVShows()
+                        case .liveTV:
+                            LiveTV()
+                        case .favorites:
+                            Favorites()
+                        }
+                    } label: {
+                        Label(tab.rawValue, systemImage: tab.icon)
+                    }
+                    .contextMenu {
+                        Button(action: {
+                            print("Action \(tab)")
+                        }){
+                            Text("Action")
+                        }
+                    }
+                }
             }
         }
+        .listStyle(.sidebar)
     }
 }
 
-#Preview {
-    ContentView()
-        .modelContainer(for: Item.self, inMemory: true)
-}
+//#Preview {
+//    ContentView()
+//        .modelContainer(for: Item.self, inMemory: true)
+//}
