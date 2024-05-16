@@ -31,6 +31,11 @@
 		1EB9E6BA2BF567E70064EB6F /* URL+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB9E6B52BF567E70064EB6F /* URL+Extension.swift */; };
 		1EB9E6BB2BF567E70064EB6F /* URLCache+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB9E6B62BF567E70064EB6F /* URLCache+Extension.swift */; };
 		1EB9E6BD2BF56B870064EB6F /* Welcome.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB9E6BC2BF56B870064EB6F /* Welcome.swift */; };
+		1EB9E6BF2BF572BE0064EB6F /* Login.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB9E6BE2BF572BE0064EB6F /* Login.swift */; };
+		1EB9E6C12BF578EF0064EB6F /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB9E6C02BF578EF0064EB6F /* MainView.swift */; };
+		1EB9E6C32BF579C00064EB6F /* Profiles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB9E6C22BF579C00064EB6F /* Profiles.swift */; };
+		1EB9E6C62BF57F9E0064EB6F /* CachedAsyncImage in Frameworks */ = {isa = PBXBuildFile; productRef = 1EB9E6C52BF57F9E0064EB6F /* CachedAsyncImage */; };
+		1EB9E6C82BF58A4D0064EB6F /* Color+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB9E6C72BF58A4D0064EB6F /* Color+Extension.swift */; };
 		46DF4A1E86BB5A3653455C41 /* Pods_Startup.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA529067A9CDB26D4F4B7A1F /* Pods_Startup.framework */; };
 /* End PBXBuildFile section */
 
@@ -59,6 +64,10 @@
 		1EB9E6B52BF567E70064EB6F /* URL+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URL+Extension.swift"; sourceTree = "<group>"; };
 		1EB9E6B62BF567E70064EB6F /* URLCache+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URLCache+Extension.swift"; sourceTree = "<group>"; };
 		1EB9E6BC2BF56B870064EB6F /* Welcome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Welcome.swift; sourceTree = "<group>"; };
+		1EB9E6BE2BF572BE0064EB6F /* Login.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Login.swift; sourceTree = "<group>"; };
+		1EB9E6C02BF578EF0064EB6F /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		1EB9E6C22BF579C00064EB6F /* Profiles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profiles.swift; sourceTree = "<group>"; };
+		1EB9E6C72BF58A4D0064EB6F /* Color+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Extension.swift"; sourceTree = "<group>"; };
 		7542C77D5DFFFB8A44F4B917 /* Pods-Startup.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Startup.debug.xcconfig"; path = "Target Support Files/Pods-Startup/Pods-Startup.debug.xcconfig"; sourceTree = "<group>"; };
 		B16588638D2DA2E5D8D83672 /* Pods-Startup.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Startup.release.xcconfig"; path = "Target Support Files/Pods-Startup/Pods-Startup.release.xcconfig"; sourceTree = "<group>"; };
 		CA529067A9CDB26D4F4B7A1F /* Pods_Startup.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Startup.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -70,6 +79,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1EB9E6A22BF566730064EB6F /* SwiftyJSON in Frameworks */,
+				1EB9E6C62BF57F9E0064EB6F /* CachedAsyncImage in Frameworks */,
 				1EB9E69F2BF566620064EB6F /* KeychainAccess in Frameworks */,
 				46DF4A1E86BB5A3653455C41 /* Pods_Startup.framework in Frameworks */,
 			);
@@ -155,6 +165,9 @@
 			isa = PBXGroup;
 			children = (
 				1EB9E6BC2BF56B870064EB6F /* Welcome.swift */,
+				1EB9E6C22BF579C00064EB6F /* Profiles.swift */,
+				1EB9E6BE2BF572BE0064EB6F /* Login.swift */,
+				1EB9E6C02BF578EF0064EB6F /* MainView.swift */,
 				1EB9E6942BF55EC00064EB6F /* Movies.swift */,
 				1EB9E6962BF55ED00064EB6F /* TVShows.swift */,
 				1EB9E6992BF55EE50064EB6F /* LiveTV.swift */,
@@ -179,6 +192,7 @@
 				1EB9E6B22BF567E60064EB6F /* String+Extension.swift */,
 				1EB9E6B52BF567E70064EB6F /* URL+Extension.swift */,
 				1EB9E6B62BF567E70064EB6F /* URLCache+Extension.swift */,
+				1EB9E6C72BF58A4D0064EB6F /* Color+Extension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -211,6 +225,7 @@
 			packageProductDependencies = (
 				1EB9E69E2BF566620064EB6F /* KeychainAccess */,
 				1EB9E6A12BF566730064EB6F /* SwiftyJSON */,
+				1EB9E6C52BF57F9E0064EB6F /* CachedAsyncImage */,
 			);
 			productName = Startup;
 			productReference = 1EB9E67C2BF43D180064EB6F /* Startup.app */;
@@ -243,6 +258,7 @@
 			packageReferences = (
 				1EB9E69D2BF566620064EB6F /* XCRemoteSwiftPackageReference "KeychainAccess" */,
 				1EB9E6A02BF566730064EB6F /* XCRemoteSwiftPackageReference "SwiftyJSON" */,
+				1EB9E6C42BF57F9E0064EB6F /* XCRemoteSwiftPackageReference "swiftui-cached-async-image" */,
 			);
 			productRefGroup = 1EB9E67D2BF43D180064EB6F /* Products */;
 			projectDirPath = "";
@@ -295,15 +311,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1EB9E6BF2BF572BE0064EB6F /* Login.swift in Sources */,
 				1EB9E6952BF55EC00064EB6F /* Movies.swift in Sources */,
 				1EB9E69A2BF55EE50064EB6F /* LiveTV.swift in Sources */,
 				1EB9E6822BF43D180064EB6F /* ContentView.swift in Sources */,
 				1EB9E6AE2BF5679E0064EB6F /* Profile.swift in Sources */,
 				1EB9E6842BF43D180064EB6F /* Item.swift in Sources */,
 				1EB9E6BA2BF567E70064EB6F /* URL+Extension.swift in Sources */,
+				1EB9E6C82BF58A4D0064EB6F /* Color+Extension.swift in Sources */,
+				1EB9E6C12BF578EF0064EB6F /* MainView.swift in Sources */,
 				1EB9E6B82BF567E70064EB6F /* Date+Extension.swift in Sources */,
 				1EB9E6802BF43D180064EB6F /* StartupApp.swift in Sources */,
 				1EB9E6AF2BF5679E0064EB6F /* LoginResponse.swift in Sources */,
+				1EB9E6C32BF579C00064EB6F /* Profiles.swift in Sources */,
 				1EB9E69C2BF55EF00064EB6F /* Favorites.swift in Sources */,
 				1EB9E6B92BF567E70064EB6F /* Array+Extension.swift in Sources */,
 				1EB9E6A62BF567600064EB6F /* AuthenticationViewModel.swift in Sources */,
@@ -537,6 +557,14 @@
 				minimumVersion = 5.0.2;
 			};
 		};
+		1EB9E6C42BF57F9E0064EB6F /* XCRemoteSwiftPackageReference "swiftui-cached-async-image" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/lorenzofiamingo/swiftui-cached-async-image";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.1.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -549,6 +577,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 1EB9E6A02BF566730064EB6F /* XCRemoteSwiftPackageReference "SwiftyJSON" */;
 			productName = SwiftyJSON;
+		};
+		1EB9E6C52BF57F9E0064EB6F /* CachedAsyncImage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1EB9E6C42BF57F9E0064EB6F /* XCRemoteSwiftPackageReference "swiftui-cached-async-image" */;
+			productName = CachedAsyncImage;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

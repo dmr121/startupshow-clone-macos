@@ -33,7 +33,7 @@ import KeychainAccess
             let profile = try Profile(from: json)
             withAnimation { self.profile = profile }
         } catch {
-            print("Couldn't load profile")
+            print("🚨 Error loading profile: \(error.localizedDescription)")
         }
     }
 }
@@ -55,8 +55,8 @@ extension Authentication {
             "username": username,
             "password": password
         ])
-        let (responseData, _) = try await URLSession.shared.upload(for: request, from: data)
         
+        let (responseData, _) = try await URLSession.shared.upload(for: request, from: data)
         let json = try JSON(data: responseData)
         let loginResponse = try LoginResponse(from: json)
         

@@ -7,9 +7,30 @@
 
 import SwiftUI
 
+fileprivate enum Path {
+    case welcome
+    case login
+}
+
 struct Welcome: View {
+    @State private var navigation = NavigationPath()
+    
     var body: some View {
-        Text("Welcome")
+        NavigationStack(path: $navigation) {
+            Group {
+                Button("Login") {
+                    navigation.append(Path.login)
+                }
+            }
+            .navigationDestination(for: Path.self) { path in
+                switch path {
+                case .welcome:
+                    Welcome()
+                case .login:
+                    Login()
+                }
+            }
+        }
     }
 }
 
