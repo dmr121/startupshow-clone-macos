@@ -24,7 +24,7 @@ struct StartupApp: App {
     }()
     
     @State private var auth = Authentication()
-    @State private var moviesViewModel = MoviesViewModel()
+    @State private var categoriesViewModel = CategoriesViewModel()
 
     var body: some Scene {
         WindowGroup {
@@ -32,7 +32,7 @@ struct StartupApp: App {
                 .frame(minWidth: 800)
                 .frame(minHeight: 450)
                 .environment(auth)
-                .environment(moviesViewModel)
+                .environment(categoriesViewModel)
         }
 //        .windowStyle(.hiddenTitleBar)
         .modelContainer(sharedModelContainer)

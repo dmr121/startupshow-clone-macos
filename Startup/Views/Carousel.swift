@@ -104,6 +104,7 @@ struct Carousel<Content, Item: Hashable>: View where Content: View {
                     bottomTrailingRadius: 4,
                     topTrailingRadius: 4
                 ))
+                .scaleEffect(hoveringLeft ? 1: 0.75, anchor: .leading)
 //                .offset(CGSize(width: hoveringLeft ? 0: -horizontalPadding / 2, height: 0))
                 .onHover { h in withAnimation { hoveringLeft = h } }
             }
@@ -134,6 +135,7 @@ struct Carousel<Content, Item: Hashable>: View where Content: View {
                     bottomTrailingRadius: 0,
                     topTrailingRadius: 0
                 ))
+                .scaleEffect(hoveringRight ? 1: 0.75, anchor: .trailing)
 //                .offset(CGSize(width: hoveringRight ? 0: horizontalPadding / 2, height: 0))
                 .onHover { h in withAnimation { hoveringRight = h } }
             }

@@ -12,7 +12,7 @@ fileprivate let columnCount = 6
 
 struct Movies: View {
     @Environment(Authentication.self) private var auth
-    @Environment(MoviesViewModel.self) private var moviesViewModel
+    @Environment(CategoriesViewModel.self) private var categoriesViewModel
     
     @State private var selectedMovie: Movie?
     
@@ -29,12 +29,12 @@ struct Movies: View {
         }
         .task {
             do {
-                withAnimation { moviesViewModel.fetchingCategories = true }
-                try await moviesViewModel.getCategories(profile: auth.profile)
+                withAnimation { categoriesViewModel.fetchingCategories = true }
+                try await categoriesViewModel.getCategories(profile: auth.profile)
             } catch {
                 print("🚨 Error fetching categories: \(error.localizedDescription)")
             }
-            withAnimation { moviesViewModel.fetchingCategories = false }
+            withAnimation { categoriesViewModel.fetchingCategories = false }
         }
     }
 }
@@ -43,7 +43,7 @@ struct Movies: View {
 extension Movies {
     @ViewBuilder private func MoviesList(geometry: GeometryProxy) -> some View {
         LazyVStack(alignment: .leading, spacing: 18) {
-            ForEach(moviesViewModel.categories) { category in
+            ForEach(categoriesViewModel.categories) { category in
                 let cardPadding: CGFloat = 4
                 let hPadding = geometry.size.width * 0.065
                 let height = (geometry.size.width - (cardPadding * 2 * CGFloat(columnCount)) - (hPadding * 2)) * 1.5 / CGFloat(columnCount)
@@ -64,11 +64,11 @@ extension Movies {
             }
         }
         .padding(.vertical)
-        .blur(radius: moviesViewModel.fetchingCategories ? 20: 0)
-        .disabled(moviesViewModel.fetchingCategories)
+        .blur(radius: categoriesViewModel.fetchingCategories ? 20: 0)
+        .disabled(categoriesViewModel.fetchingCategories)
     }
     
-    @ViewBuilder private func MovieCard(_ movie: Movie) -> some View {
+    @ViewBuilder private func MovieCard(_ movie: MovieViewModel) -> some View {
         HoverScale(scale: 1.05) {
             GeometryReader { geometry in
                 Button {
