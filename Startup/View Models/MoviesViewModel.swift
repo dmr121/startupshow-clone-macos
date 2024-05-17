@@ -38,6 +38,7 @@ extension MoviesViewModel {
         
         withAnimation { self.categories = categories.map { CategoryViewModel($0) } }
         
+        // Get all movies from all categories
         try await withThrowingTaskGroup(of: Void.self) { group in
             self.categories.forEach { category in
                 if category.id == "1" {
@@ -47,7 +48,7 @@ extension MoviesViewModel {
                 }
             }
             
-            for try await result in group {
+            for try await _ in group {
                 print("Got category movies")
             }
         }

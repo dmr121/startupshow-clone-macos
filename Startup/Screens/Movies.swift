@@ -23,8 +23,8 @@ struct Movies: View {
             }
             .sheet(item: $selectedMovie) { movie in
                 MovieDetailModal(movie)
-                    .frame(minWidth: 750, minHeight: 400)
-                    .frame(maxWidth: 1000, maxHeight: 533)
+                    .frame(minWidth: 750, minHeight: 533)
+                    .frame(maxWidth: 1000, maxHeight: 710)
             }
         }
         .task {
