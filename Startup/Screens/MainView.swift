@@ -39,12 +39,16 @@ extension MainView {
                         switch tab {
                         case .movies:
                             Movies()
+                                .navigationTitle("Movies")
                         case .tv:
                             TVShows()
+                                .navigationTitle("TV")
                         case .liveTV:
                             LiveTV()
+                                .navigationTitle("Live TV")
                         case .favorites:
                             Favorites()
+                                .navigationTitle("Favorites")
                         }
                     } label: {
                         Label(tab.rawValue, systemImage: tab.icon)

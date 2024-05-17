@@ -8,7 +8,7 @@
 import Foundation
 import SwiftyJSON
 
-struct Category: Identifiable {
+struct Category: Identifiable, Hashable {
     let id: String
     let name: String
     let index: Int
@@ -24,14 +24,8 @@ struct Category: Identifiable {
         index = json["index"].intValue
         type = json["type"].stringValue
         isGenre = json["is_genre"].boolValue
-        
-        if let logoURLString = json["logo_url"].string {
-            logoURL = URL(string: logoURLString)
-        } else { logoURL = nil }
-        if let bannerLogoURLString = json["banner_logo_url"].string {
-            bannerLogoURL = URL(string: bannerLogoURLString)
-        } else { bannerLogoURL = nil }
-        
+        logoURL = json["logo_url"].url
+        bannerLogoURL = json["banner_logo_url"].url
         hasAccessibleInfo = json["has_accessible_infos"].boolValue
     }
 }

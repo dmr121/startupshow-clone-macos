@@ -10,7 +10,6 @@ import AppKit
 
 extension Color {
     static let label = Color(nsColor: .labelColor)
-    static let background = Color(nsColor: .windowBackgroundColor)
     static let quaternarySystemFill = Color(nsColor: .quaternarySystemFill)
     static let tertiarySystemFill = Color(nsColor: .tertiarySystemFill)
 }

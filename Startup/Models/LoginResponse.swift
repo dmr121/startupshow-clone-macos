@@ -43,21 +43,10 @@ extension LoginResponse {
         
         init(from json: JSON) throws {
             name = json["name"].stringValue
-            
-            if let websiteString = json["website"].string {
-                website = URL(string: websiteString)
-            } else { website = nil }
-            
-            if let logoURLString = json["logo_small"].string {
-                logoSmallURL = URL(string: logoURLString)
-            } else { logoSmallURL = nil }
-            if let logoURLString = json["logo_large"].string {
-                logoLargeURL = URL(string: logoURLString)
-            } else { logoLargeURL = nil }
-            if let logoURLString = json["logo_40px"].string {
-                logo40PxURL = URL(string: logoURLString)
-            } else { logo40PxURL = nil }
-            
+            website = json["website"].url
+            logoSmallURL = json["logo_small"].url
+            logoLargeURL = json["logo_large"].url
+            logo40PxURL = json["logo_40px"].url
             color = json["color"].string
             movies = json["movies"].boolValue
             liveTV = json["livetv"].boolValue

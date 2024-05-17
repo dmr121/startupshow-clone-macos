@@ -42,6 +42,7 @@ struct ContentView: View {
                     .zIndex(1)
             }
         }
+        .frame(maxWidth: .infinity).frame(maxHeight: .infinity)
         .task {
             do {
                 withAnimation { auth.attemptingToFetchUser = true }
