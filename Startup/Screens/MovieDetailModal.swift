@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AlertToast
 import CachedAsyncImage
 import Foundation
 
@@ -13,11 +14,14 @@ struct MovieDetailModal: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(Navigation.self) private var navigation
     @Environment(Authentication.self) private var auth
-    @Environment(CategoriesViewModel.self) private var categoriesViewModel
     
     let movie: MovieViewModel
     
     @State private var secureLink: String?
+    @State private var favoriteSuccess = false
+    @State private var unfavoriteSuccess = false
+    @State private var favoriteSuccessMessage: String?
+    @State private var unfavoriteSuccessMessage: String?
     
     init(_ movie: MovieViewModel) {
         self.movie = movie
@@ -38,36 +42,6 @@ struct MovieDetailModal: View {
                     .clipped()
                     .background(.secondary.opacity(0.2))
                     .mask(LinearGradient(gradient: Gradient(colors: [.black, .black, .black, .black, .clear]), startPoint: .top, endPoint: .bottom))
-                    
-                    // Dismiss button
-                    VStack {
-                        HStack {
-                            Hover { isHovering in
-                                Button {
-                                    dismiss()
-                                } label: {
-                                    ZStack {
-                                        Circle().fill(.black).opacity(isHovering ? 0.65: 0.35)
-                                        
-                                        Image(systemName: "xmark")
-                                            .fontWeight(.bold)
-                                            .foregroundStyle(.white.opacity(isHovering ? 0.75: 0.6))
-                                        
-                                        if isHovering {
-                                            Circle().stroke(.white.opacity(0.3), lineWidth: 1)
-                                        }
-                                    }
-                                    .frame(width: 32, height: 32)
-                                }
-                                .buttonStyle(.plain)
-                            }
-                            
-                            Spacer()
-                        }
-                        
-                        Spacer()
-                    }
-                    .padding(12)
                 }
                 
                 // Details
@@ -131,9 +105,11 @@ struct MovieDetailModal: View {
                                         Task {
                                             do {
                                                 if movie.value.is_favorite ?? false {
-                                                    try await movie.unfavorite(profile: auth.profile)
+                                                    unfavoriteSuccessMessage = try await movie.unfavorite(profile: auth.profile)
+                                                    unfavoriteSuccess = true
                                                 } else {
-                                                    try await movie.favorite(profile: auth.profile)
+                                                    favoriteSuccessMessage = try await movie.favorite(profile: auth.profile)
+                                                    favoriteSuccess = true
                                                 }
                                             } catch {
                                                 print("🚨 Error toggling favorite movie: \(error.localizedDescription)")
@@ -180,6 +156,12 @@ struct MovieDetailModal: View {
                                             .clipShape(RoundedRectangle(cornerRadius: 2))
                                         
                                         Text(String(format: "%.1f", movie.value.meta.rank))
+                                        
+                                        if let votes = Int(movie.value.meta.votes)?.abbr {
+                                            Text("(\(votes))")
+                                                .font(.subheadline)
+                                                .opacity(0.75)
+                                        }
                                     }
                                     
                                     // Runtime
@@ -236,7 +218,44 @@ struct MovieDetailModal: View {
                 
             }
             .scrollBounceBehavior(.basedOnSize)
+            
+            // Dismiss button
+            VStack {
+                HStack {
+                    Hover { isHovering in
+                        Button {
+                            dismiss()
+                        } label: {
+                            ZStack {
+                                Circle().fill(.black).opacity(isHovering ? 0.65: 0.35)
+                                
+                                Image(systemName: "xmark")
+                                    .fontWeight(.bold)
+                                    .foregroundStyle(.white.opacity(isHovering ? 0.75: 0.6))
+                                
+                                if isHovering {
+                                    Circle().stroke(.white.opacity(0.3), lineWidth: 1)
+                                }
+                            }
+                            .frame(width: 32, height: 32)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                    
+                    Spacer()
+                }
+                
+                Spacer()
+            }
+            .padding(12)
         }
         .background(Color.background)
+        .toast(isPresenting: $favoriteSuccess){
+            AlertToast(displayMode: .hud, type: .systemImage("star.fill", .white), title: "Saved Favorite", subTitle: favoriteSuccessMessage)
+        }
+        
+        .toast(isPresenting: $unfavoriteSuccess){
+            AlertToast(displayMode: .hud, type: .systemImage("star.slash", .white), title: "Removed Favorite", subTitle: unfavoriteSuccessMessage)
+        }
     }
 }

@@ -1,5 +1,5 @@
 //
-//  CategoriesViewModel.swift
+//  MovieCategoriesViewModel.swift
 //  Startup
 //
 //  Created by David Rozmajzl on 5/15/24.
@@ -9,14 +9,14 @@ import SwiftUI
 import SwiftyJSON
 import KeychainAccess
 
-@Observable class CategoriesViewModel {
+@Observable class MovieCategoriesViewModel {
     var categories = [CategoryViewModel]()
     var fetchingCategories = true
     var lastFetched: Date?
 }
 
 // MARK: Public methods
-extension CategoriesViewModel {    
+extension MovieCategoriesViewModel {    
     @MainActor
     func getCategories(profile: Profile?) async throws {
         // Make sure 10 minutes have passed
@@ -41,7 +41,7 @@ extension CategoriesViewModel {
         // Get all movies from all categories
         try await withThrowingTaskGroup(of: Void.self) { group in
             self.categories.forEach { category in
-                if category.id == "1" {
+                if category.id == "1" || category.id == "2" {
                     group.addTask {
                         try await category.getMovies(profile: profile)
                     }

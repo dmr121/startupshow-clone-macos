@@ -12,7 +12,7 @@ fileprivate let columnCount = 6
 
 struct Movies: View {
     @Environment(Authentication.self) private var auth
-    @Environment(CategoriesViewModel.self) private var categoriesViewModel
+    @Environment(MovieCategoriesViewModel.self) private var movieCategoriesViewModel
     
     @State private var selectedMovie: MovieViewModel?
     
@@ -29,12 +29,12 @@ struct Movies: View {
         }
         .task {
             do {
-                withAnimation { categoriesViewModel.fetchingCategories = true }
-                try await categoriesViewModel.getCategories(profile: auth.profile)
+                withAnimation { movieCategoriesViewModel.fetchingCategories = true }
+                try await movieCategoriesViewModel.getCategories(profile: auth.profile)
             } catch {
                 print("🚨 Error fetching categories: \(error.localizedDescription)")
             }
-            withAnimation { categoriesViewModel.fetchingCategories = false }
+            withAnimation { movieCategoriesViewModel.fetchingCategories = false }
         }
     }
 }
@@ -43,15 +43,12 @@ struct Movies: View {
 extension Movies {
     @ViewBuilder private func MoviesList(geometry: GeometryProxy) -> some View {
         LazyVStack(alignment: .leading, spacing: 18) {
-            ForEach(categoriesViewModel.categories) { category in
-                let cardPadding: CGFloat = 4
-                let hPadding = geometry.size.width * 0.065
-                let height = (geometry.size.width - (cardPadding * 2 * CGFloat(columnCount)) - (hPadding * 2)) * 1.5 / CGFloat(columnCount)
-                
+            ForEach(movieCategoriesViewModel.categories) { category in
                 Section {
-                    Carousel(category.movies, columns: columnCount, height: height, horizontalPadding: hPadding) { movie in
+                    Carousel(category.movies, columns: columnCount, geometry: geometry) { movie in
                         MovieCard(movie)
-                            .padding(.horizontal, cardPadding)
+                            .frame(maxWidth: .infinity)
+                            .aspectRatio(2/3, contentMode: .fill)
                     }
                 } header: {
                     Text(category.value.name)
@@ -59,18 +56,18 @@ extension Movies {
                         .fontWeight(.bold)
                         .padding(.horizontal, 11)
                         .padding(.bottom, -8)
-                        .padding(.leading, cardPadding * 2)
+                        .padding(.leading, 6 * 2)
                 }
             }
         }
         .padding(.vertical)
-        .blur(radius: categoriesViewModel.fetchingCategories ? 20: 0)
-        .disabled(categoriesViewModel.fetchingCategories)
+        .blur(radius: movieCategoriesViewModel.fetchingCategories ? 20: 0)
+        .disabled(movieCategoriesViewModel.fetchingCategories)
     }
     
     @ViewBuilder private func MovieCard(_ movie: MovieViewModel) -> some View {
-        HoverScale(scale: 1.05) {
-            GeometryReader { geometry in
+        GeometryReader { geometry in
+            HoverScale(scale: 1.05) {
                 Button {
                     withAnimation { selectedMovie = movie }
                 } label: {
@@ -81,13 +78,14 @@ extension Movies {
                         ProgressView()
                             .scaleEffect(0.6)
                     }
-                    .frame(width: geometry.size.width, height: geometry.size.height)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(.secondary.opacity(0.2))
                     .clipShape(RoundedRectangle(cornerRadius: 4, style: .continuous))
                     .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
             }
+            .frame(height: geometry.size.width * 1.5)
         }
     }
 }

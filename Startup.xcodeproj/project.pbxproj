@@ -30,6 +30,11 @@
 		1E1787A12BF856CA00BDB45E /* Navigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1787A02BF856CA00BDB45E /* Navigation.swift */; };
 		1E1787A32BF8637100BDB45E /* VLCMediaPlayerState+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1787A22BF8637100BDB45E /* VLCMediaPlayerState+Extension.swift */; };
 		1E1787A52BF9ACBD00BDB45E /* fullScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1787A42BF9ACBD00BDB45E /* fullScreen.swift */; };
+		1E1787A72BFA76E800BDB45E /* Int+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1787A62BFA76E800BDB45E /* Int+Extension.swift */; };
+		1E1787AA2BFA7ECB00BDB45E /* AlertToast in Frameworks */ = {isa = PBXBuildFile; productRef = 1E1787A92BFA7ECB00BDB45E /* AlertToast */; };
+		1E1787AC2BFA82BF00BDB45E /* TVCategoriesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1787AB2BFA82BF00BDB45E /* TVCategoriesViewModel.swift */; };
+		1E1787AE2BFA836600BDB45E /* TVViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1787AD2BFA836600BDB45E /* TVViewModel.swift */; };
+		1E1787B02BFA839100BDB45E /* TVShow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1787AF2BFA839100BDB45E /* TVShow.swift */; };
 		1E1E32772BF7EC3A00519351 /* minutesToHoursAndMinutes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1E32762BF7EC3A00519351 /* minutesToHoursAndMinutes.swift */; };
 		1E1E32792BF7F6C900519351 /* VLC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1E32782BF7F6C900519351 /* VLC.swift */; };
 		1E1E327B2BF7FA0A00519351 /* MovieViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1E327A2BF7FA0A00519351 /* MovieViewModel.swift */; };
@@ -60,7 +65,7 @@
 		1EB9E6C12BF578EF0064EB6F /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB9E6C02BF578EF0064EB6F /* MainView.swift */; };
 		1EB9E6C32BF579C00064EB6F /* Profiles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB9E6C22BF579C00064EB6F /* Profiles.swift */; };
 		1EB9E6C82BF58A4D0064EB6F /* Color+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB9E6C72BF58A4D0064EB6F /* Color+Extension.swift */; };
-		1EB9E6CA2BF58E1E0064EB6F /* CategoriesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB9E6C92BF58E1E0064EB6F /* CategoriesViewModel.swift */; };
+		1EB9E6CA2BF58E1E0064EB6F /* MovieCategoriesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB9E6C92BF58E1E0064EB6F /* MovieCategoriesViewModel.swift */; };
 		1EB9E6CC2BF5914C0064EB6F /* MockData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB9E6CB2BF5914C0064EB6F /* MockData.swift */; };
 		1EB9E6D02BF5A19F0064EB6F /* HoverScale.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB9E6CF2BF5A19F0064EB6F /* HoverScale.swift */; };
 		1EB9E6D32BF651150064EB6F /* Carousel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB9E6D22BF651150064EB6F /* Carousel.swift */; };
@@ -93,6 +98,10 @@
 		1E1787A02BF856CA00BDB45E /* Navigation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Navigation.swift; sourceTree = "<group>"; };
 		1E1787A22BF8637100BDB45E /* VLCMediaPlayerState+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VLCMediaPlayerState+Extension.swift"; sourceTree = "<group>"; };
 		1E1787A42BF9ACBD00BDB45E /* fullScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = fullScreen.swift; sourceTree = "<group>"; };
+		1E1787A62BFA76E800BDB45E /* Int+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+Extension.swift"; sourceTree = "<group>"; };
+		1E1787AB2BFA82BF00BDB45E /* TVCategoriesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVCategoriesViewModel.swift; sourceTree = "<group>"; };
+		1E1787AD2BFA836600BDB45E /* TVViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVViewModel.swift; sourceTree = "<group>"; };
+		1E1787AF2BFA839100BDB45E /* TVShow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVShow.swift; sourceTree = "<group>"; };
 		1E1E32762BF7EC3A00519351 /* minutesToHoursAndMinutes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = minutesToHoursAndMinutes.swift; sourceTree = "<group>"; };
 		1E1E32782BF7F6C900519351 /* VLC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VLC.swift; sourceTree = "<group>"; };
 		1E1E327A2BF7FA0A00519351 /* MovieViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieViewModel.swift; sourceTree = "<group>"; };
@@ -125,7 +134,7 @@
 		1EB9E6C02BF578EF0064EB6F /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		1EB9E6C22BF579C00064EB6F /* Profiles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Profiles.swift; sourceTree = "<group>"; };
 		1EB9E6C72BF58A4D0064EB6F /* Color+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Extension.swift"; sourceTree = "<group>"; };
-		1EB9E6C92BF58E1E0064EB6F /* CategoriesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesViewModel.swift; sourceTree = "<group>"; };
+		1EB9E6C92BF58E1E0064EB6F /* MovieCategoriesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieCategoriesViewModel.swift; sourceTree = "<group>"; };
 		1EB9E6CB2BF5914C0064EB6F /* MockData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockData.swift; sourceTree = "<group>"; };
 		1EB9E6CF2BF5A19F0064EB6F /* HoverScale.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoverScale.swift; sourceTree = "<group>"; };
 		1EB9E6D22BF651150064EB6F /* Carousel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Carousel.swift; sourceTree = "<group>"; };
@@ -158,6 +167,7 @@
 				1E1787832BF84A8200BDB45E /* CoreFoundation.framework in Frameworks */,
 				1E1787812BF84A7C00BDB45E /* CFNetwork.framework in Frameworks */,
 				1E17877F2BF84A7500BDB45E /* AVFoundation.framework in Frameworks */,
+				1E1787AA2BFA7ECB00BDB45E /* AlertToast in Frameworks */,
 				1E17877D2BF84A6D00BDB45E /* AudioToolbox.framework in Frameworks */,
 				1E1787752BF849D800BDB45E /* SwiftyJSON in Frameworks */,
 				1E17877B2BF849E400BDB45E /* CachedAsyncImage in Frameworks */,
@@ -237,6 +247,7 @@
 			isa = PBXGroup;
 			children = (
 				1EC570B52BF6E10A008FCD51 /* Movie.swift */,
+				1E1787AF2BFA839100BDB45E /* TVShow.swift */,
 				1EB9E6A82BF5679E0064EB6F /* Category.swift */,
 				1EB9E6AB2BF5679E0064EB6F /* LoginResponse.swift */,
 				1EB9E6AA2BF5679E0064EB6F /* Profile.swift */,
@@ -255,8 +266,8 @@
 				1EB9E6C02BF578EF0064EB6F /* MainView.swift */,
 				1EB9E6942BF55EC00064EB6F /* Movies.swift */,
 				1EC570B92BF6F13E008FCD51 /* MovieDetailModal.swift */,
-				1E1E327C2BF83E6F00519351 /* Watch.swift */,
 				1EB9E6962BF55ED00064EB6F /* TVShows.swift */,
+				1E1E327C2BF83E6F00519351 /* Watch.swift */,
 				1EB9E6992BF55EE50064EB6F /* LiveTV.swift */,
 				1EB9E69B2BF55EF00064EB6F /* Favorites.swift */,
 			);
@@ -268,9 +279,11 @@
 			children = (
 				1EB9E6A52BF567600064EB6F /* AuthenticationViewModel.swift */,
 				1E1787A02BF856CA00BDB45E /* Navigation.swift */,
-				1EB9E6C92BF58E1E0064EB6F /* CategoriesViewModel.swift */,
+				1EB9E6C92BF58E1E0064EB6F /* MovieCategoriesViewModel.swift */,
+				1E1787AB2BFA82BF00BDB45E /* TVCategoriesViewModel.swift */,
 				1EC570BB2BF6F5CA008FCD51 /* CategoryViewModel.swift */,
 				1E1E327A2BF7FA0A00519351 /* MovieViewModel.swift */,
+				1E1787AD2BFA836600BDB45E /* TVViewModel.swift */,
 			);
 			path = "View Models";
 			sourceTree = "<group>";
@@ -285,6 +298,7 @@
 				1EB9E6B62BF567E70064EB6F /* URLCache+Extension.swift */,
 				1EB9E6C72BF58A4D0064EB6F /* Color+Extension.swift */,
 				1E1787A22BF8637100BDB45E /* VLCMediaPlayerState+Extension.swift */,
+				1E1787A62BFA76E800BDB45E /* Int+Extension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -357,6 +371,7 @@
 				1E1787742BF849D800BDB45E /* SwiftyJSON */,
 				1E1787772BF849DD00BDB45E /* KeychainAccess */,
 				1E17877A2BF849E400BDB45E /* CachedAsyncImage */,
+				1E1787A92BFA7ECB00BDB45E /* AlertToast */,
 			);
 			productName = Startup;
 			productReference = 1EB9E67C2BF43D180064EB6F /* Startup.app */;
@@ -390,6 +405,7 @@
 				1E1787732BF849D800BDB45E /* XCRemoteSwiftPackageReference "SwiftyJSON" */,
 				1E1787762BF849DD00BDB45E /* XCRemoteSwiftPackageReference "KeychainAccess" */,
 				1E1787792BF849E400BDB45E /* XCRemoteSwiftPackageReference "swiftui-cached-async-image" */,
+				1E1787A82BFA7ECB00BDB45E /* XCRemoteSwiftPackageReference "AlertToast" */,
 			);
 			productRefGroup = 1EB9E67D2BF43D180064EB6F /* Products */;
 			projectDirPath = "";
@@ -462,6 +478,7 @@
 				1EB9E6BF2BF572BE0064EB6F /* Login.swift in Sources */,
 				1EB9E6952BF55EC00064EB6F /* Movies.swift in Sources */,
 				1E1787A32BF8637100BDB45E /* VLCMediaPlayerState+Extension.swift in Sources */,
+				1E1787A72BFA76E800BDB45E /* Int+Extension.swift in Sources */,
 				1EB9E69A2BF55EE50064EB6F /* LiveTV.swift in Sources */,
 				1EB9E6CC2BF5914C0064EB6F /* MockData.swift in Sources */,
 				1EB9E6822BF43D180064EB6F /* ContentView.swift in Sources */,
@@ -474,6 +491,7 @@
 				1EB9E6BA2BF567E70064EB6F /* URL+Extension.swift in Sources */,
 				1EB9E6C82BF58A4D0064EB6F /* Color+Extension.swift in Sources */,
 				1EB9E6C12BF578EF0064EB6F /* MainView.swift in Sources */,
+				1E1787AC2BFA82BF00BDB45E /* TVCategoriesViewModel.swift in Sources */,
 				1EB9E6B82BF567E70064EB6F /* Date+Extension.swift in Sources */,
 				1EB9E6D32BF651150064EB6F /* Carousel.swift in Sources */,
 				1EB9E6802BF43D180064EB6F /* StartupApp.swift in Sources */,
@@ -483,6 +501,7 @@
 				1EB9E69C2BF55EF00064EB6F /* Favorites.swift in Sources */,
 				1EB9E6B92BF567E70064EB6F /* Array+Extension.swift in Sources */,
 				1EB9E6A62BF567600064EB6F /* AuthenticationViewModel.swift in Sources */,
+				1E1787B02BFA839100BDB45E /* TVShow.swift in Sources */,
 				1E17879F2BF84ECF00BDB45E /* VLCPlayer.swift in Sources */,
 				1EB9E6972BF55ED00064EB6F /* TVShows.swift in Sources */,
 				1EB9E6AD2BF5679E0064EB6F /* User.swift in Sources */,
@@ -497,7 +516,8 @@
 				1EB9E6AC2BF5679E0064EB6F /* Category.swift in Sources */,
 				1EB9E6BB2BF567E70064EB6F /* URLCache+Extension.swift in Sources */,
 				1EB9E6D02BF5A19F0064EB6F /* HoverScale.swift in Sources */,
-				1EB9E6CA2BF58E1E0064EB6F /* CategoriesViewModel.swift in Sources */,
+				1EB9E6CA2BF58E1E0064EB6F /* MovieCategoriesViewModel.swift in Sources */,
+				1E1787AE2BFA836600BDB45E /* TVViewModel.swift in Sources */,
 				1EC570BA2BF6F13E008FCD51 /* MovieDetailModal.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -745,6 +765,14 @@
 				minimumVersion = 2.1.1;
 			};
 		};
+		1E1787A82BFA7ECB00BDB45E /* XCRemoteSwiftPackageReference "AlertToast" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/elai950/AlertToast#completeerror-alert";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.3.9;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -762,6 +790,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 1E1787792BF849E400BDB45E /* XCRemoteSwiftPackageReference "swiftui-cached-async-image" */;
 			productName = CachedAsyncImage;
+		};
+		1E1787A92BFA7ECB00BDB45E /* AlertToast */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1E1787A82BFA7ECB00BDB45E /* XCRemoteSwiftPackageReference "AlertToast" */;
+			productName = AlertToast;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

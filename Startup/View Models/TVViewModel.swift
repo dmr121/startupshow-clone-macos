@@ -1,19 +1,19 @@
 //
-//  MovieViewModel.swift
+//  TVViewModel.swift
 //  Startup
 //
-//  Created by David Rozmajzl on 5/17/24.
+//  Created by David Rozmajzl on 5/19/24.
 //
 
 import SwiftUI
 import SwiftyJSON
 import KeychainAccess
 
-@Observable class MovieViewModel: Identifiable, Hashable {
-    var value: Movie
+@Observable class TVViewModel: Identifiable, Hashable {
+    var value: TVShow
     var favoritingMovie = false
     
-    init(_ value: Movie) {
+    init(_ value: TVShow) {
         self.value = value
     }
     
@@ -21,7 +21,7 @@ import KeychainAccess
         return value.id
     }
     
-    static func == (lhs: MovieViewModel, rhs: MovieViewModel) -> Bool {
+    static func == (lhs: TVViewModel, rhs: TVViewModel) -> Bool {
         lhs.id == rhs.id
     }
     
@@ -31,12 +31,12 @@ import KeychainAccess
 }
 
 // MARK: Public methods
-extension MovieViewModel {
+extension TVViewModel {
     @MainActor
-    func getMovieURL(profile: Profile?) async throws -> String {
+    func getTVURL(profile: Profile?, season: Int, episode: Int) async throws -> String {
         guard let authToken = K.keychain["authToken"] else { throw "Auth token not found" }
         
-        let url = URL(string: "\(K.apiURLBase)/play/movie/\(id)")!
+        let url = URL(string: "\(K.apiURLBase)/play/tvshow/\(id)/\(season)/\(episode)")!
         
         var request = URLRequest(url: url)
         request.setValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization")

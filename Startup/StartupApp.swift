@@ -24,7 +24,8 @@ struct StartupApp: App {
     }()
     
     @State private var auth = Authentication()
-    @State private var categoriesViewModel = CategoriesViewModel()
+    @State private var movieCategoriesViewModel = MovieCategoriesViewModel()
+    @State private var tvCategoriesViewModel = TVCategoriesViewModel()
     
     var body: some Scene {
         WindowGroup {
@@ -32,7 +33,8 @@ struct StartupApp: App {
                 .frame(minWidth: 800)
                 .frame(minHeight: 450)
                 .environment(auth)
-                .environment(categoriesViewModel)
+                .environment(movieCategoriesViewModel)
+                .environment(tvCategoriesViewModel)
         }
         .modelContainer(sharedModelContainer)
     }
