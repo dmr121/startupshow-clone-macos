@@ -1,5 +1,5 @@
 //
-//  MovieDetailModal.swift
+//  MediaDetailModal.swift
 //  Startup
 //
 //  Created by David Rozmajzl on 5/16/24.
@@ -10,28 +10,29 @@ import AlertToast
 import CachedAsyncImage
 import Foundation
 
-struct MovieDetailModal: View {
+struct MediaDetailModal: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(Navigation.self) private var navigation
     @Environment(Authentication.self) private var auth
     
-    let movie: MovieViewModel
+    let media: MediaViewModel
     
     @State private var secureLink: String?
     @State private var favoriteSuccess = false
     @State private var unfavoriteSuccess = false
     @State private var favoriteSuccessMessage: String?
     @State private var unfavoriteSuccessMessage: String?
+    @State private var season = 0
     
-    init(_ movie: MovieViewModel) {
-        self.movie = movie
+    init(_ media: MediaViewModel) {
+        self.media = media
     }
     
     var body: some View {
         GeometryReader { geometry in
             ScrollView {
                 ZStack {
-                    CachedAsyncImage(url: movie.value.meta.fanart, urlCache: .imageCache) { image in
+                    CachedAsyncImage(url: media.value.meta.fanart, urlCache: .imageCache) { image in
                         image.resizable()
                             .aspectRatio(contentMode: .fill)
                     } placeholder: {
@@ -50,33 +51,35 @@ struct MovieDetailModal: View {
                         .frame(height: 200)
                     
                     VStack(alignment: .leading, spacing: 10) {
-                        Text(movie.value.title)
+                        Text(media.value.title)
                             .font(.largeTitle)
                             .fontWeight(.bold)
                         
                         // Actions
                         HStack(spacing: 20) {
-                            Hover { isHovering in
-                                Button {
-                                    navigation.paths.append(movie)
-                                } label: {
-                                    HStack {
-                                        Label("Play", systemImage: "play.fill")
-                                            .font(.title3)
-                                            .fontWeight(.bold)
+                            if (media.value.seasons?.count ?? 0) == 0 {
+                                Hover { isHovering in
+                                    Button {
+                                        navigation.paths.append(media)
+                                    } label: {
+                                        HStack {
+                                            Label("Play", systemImage: "play.fill")
+                                                .font(.title3)
+                                                .fontWeight(.bold)
+                                        }
+                                        .foregroundStyle(.black)
+                                        .padding(.vertical, 10)
+                                        .padding(.horizontal, 18)
+                                        .background(.white)
+                                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                                        .scaleEffect(isHovering ? 1.05: 1, anchor: .bottomLeading)
                                     }
-                                    .foregroundStyle(.black)
-                                    .padding(.vertical, 10)
-                                    .padding(.horizontal, 18)
-                                    .background(.white)
-                                    .clipShape(RoundedRectangle(cornerRadius: 8))
-                                    .scaleEffect(isHovering ? 1.05: 1, anchor: .bottomLeading)
+                                    .buttonStyle(.plain)
                                 }
-                                .buttonStyle(.plain)
                             }
                             
                             HStack(spacing: 15) {
-                                if let trailerURL = movie.value.meta.trailer {
+                                if let trailerURL = media.value.meta.trailer {
                                     Hover { isHovering in
                                         Link(destination: trailerURL) {
                                             Label("Trailer", systemImage: "movieclapper.fill")
@@ -104,11 +107,11 @@ struct MovieDetailModal: View {
                                     Button {
                                         Task {
                                             do {
-                                                if movie.value.is_favorite ?? false {
-                                                    unfavoriteSuccessMessage = try await movie.unfavorite(profile: auth.profile)
+                                                if media.value.is_favorite ?? false {
+                                                    unfavoriteSuccessMessage = try await media.unfavorite(profile: auth.profile)
                                                     unfavoriteSuccess = true
                                                 } else {
-                                                    favoriteSuccessMessage = try await movie.favorite(profile: auth.profile)
+                                                    favoriteSuccessMessage = try await media.favorite(profile: auth.profile)
                                                     favoriteSuccess = true
                                                 }
                                             } catch {
@@ -117,7 +120,7 @@ struct MovieDetailModal: View {
                                         }
                                     } label: {
                                         // Show solid star if movie is a favorite or if it's currently being marked as a favorite
-                                        let showFavorite = (movie.value.is_favorite ?? false) ? movie.favoritingMovie ? false: true: movie.favoritingMovie ? true: false
+                                        let showFavorite = (media.value.is_favorite ?? false) ? media.favoritingMedia ? false: true: media.favoritingMedia ? true: false
                                         Label("Favorite", systemImage: showFavorite ? "star.fill": "star")
                                             .font(.system(size: 16))
                                             .labelStyle(.iconOnly)
@@ -144,7 +147,7 @@ struct MovieDetailModal: View {
                             VStack(alignment: .leading) {
                                 HStack(spacing: 16) {
                                     // Released Year
-                                    Text(movie.value.meta.year)
+                                    Text(media.value.meta.year)
                                     
                                     // IMDB Rank
                                     HStack(spacing: 4) {
@@ -155,9 +158,9 @@ struct MovieDetailModal: View {
                                             .background(.secondary)
                                             .clipShape(RoundedRectangle(cornerRadius: 2))
                                         
-                                        Text(String(format: "%.1f", movie.value.meta.rank))
+                                        Text(String(format: "%.1f", media.value.meta.rank))
                                         
-                                        if let votes = Int(movie.value.meta.votes)?.abbr {
+                                        if let votes = Int(media.value.meta.votes)?.abbr {
                                             Text("(\(votes))")
                                                 .font(.subheadline)
                                                 .opacity(0.75)
@@ -165,15 +168,17 @@ struct MovieDetailModal: View {
                                     }
                                     
                                     // Runtime
-                                    if let minutes = Int(movie.value.meta.runtime) {
+                                    if let minutes = Int(media.value.meta.runtime) {
                                         Text(minutesToHoursAndMinutes(minutes))
                                     }
+                                    
+                                    Spacer()
                                 }
                                 .foregroundStyle(.secondary)
                                 
                                 HStack(spacing: 16) {
                                     // MPPA Rating
-                                    Text(movie.value.meta.mppa)
+                                    Text(media.value.meta.mppa)
                                         .padding(.horizontal, 12)
                                         .padding(.vertical, 1.5)
                                         .overlay {
@@ -182,10 +187,12 @@ struct MovieDetailModal: View {
                                         }
                                     
                                     // Genres
-                                    Text(movie.value.meta.genres)
+                                    Text(media.value.meta.genres)
+                                    
+                                    Spacer()
                                 }
                                 
-                                Text(movie.value.meta.plot)
+                                Text(media.value.meta.plot)
                                     .lineSpacing(6)
                                     .padding(.top)
                             }
@@ -195,20 +202,33 @@ struct MovieDetailModal: View {
                                 Group {
                                     Text("Cast: ")
                                         .foregroundStyle(.secondary.opacity(0.6)) +
-                                    Text(movie.value.meta.cast)
+                                    Text(media.value.meta.cast)
                                 }
                                 .lineSpacing(4)
                                 
-                                Group {
-                                    Text("Director: ")
-                                        .foregroundStyle(.secondary.opacity(0.6)) +
-                                    Text(movie.value.meta.director)
+                                if let director = media.value.meta.director {
+                                    Group {
+                                        Text("Director: ")
+                                            .foregroundStyle(.secondary.opacity(0.6)) +
+                                        Text(director)
+                                    }
+                                    .lineSpacing(4)
                                 }
-                                .lineSpacing(4)
+                                
+                                if let writer = media.value.meta.writer {
+                                    Group {
+                                        Text("Writer: ")
+                                            .foregroundStyle(.secondary.opacity(0.6)) +
+                                        Text(writer)
+                                    }
+                                    .lineSpacing(4)
+                                }
                             }
                             .frame(maxWidth: .infinity)
                         }
                         .padding(.top, 28)
+                        
+                        Episodes()
                     }
                     .padding(.top, -140)
                     .padding(24)
@@ -256,6 +276,61 @@ struct MovieDetailModal: View {
         
         .toast(isPresenting: $unfavoriteSuccess){
             AlertToast(displayMode: .hud, type: .systemImage("star.slash", .white), title: "Removed Favorite", subTitle: unfavoriteSuccessMessage)
+        }
+    }
+}
+
+// MARK: Views {
+extension MediaDetailModal {
+    @ViewBuilder private func Episodes() -> some View {
+        if let episodes = media.value.seasons?[season] {
+            VStack(alignment: .leading, spacing: 0) {
+                ForEach(episodes) { episode in
+                    Hover { isHovering in
+                        Button {
+                            media.type = .tv(episode.season, episode.episode)
+                            navigation.paths.append(media)
+                        } label: {
+                            HStack(spacing: 13) {
+                                CachedAsyncImage(url: episode.screenshot, urlCache: .imageCache) { image in
+                                    image.resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                } placeholder: {
+                                    ProgressView()
+                                        .scaleEffect(0.6)
+                                }
+                                .frame(width: 200, height: 112.5)
+                                .background(.secondary.opacity(0.2))
+                                .clipShape(RoundedRectangle(cornerRadius: 4, style: .continuous))
+                                
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(episode.title ?? "Episode \(episode.episode)")
+                                        .font(.title3)
+                                        .fontWeight(.bold)
+                                    
+                                    if let released = episode.released {
+                                        Text(released.formatted(date: .long, time: .omitted))
+                                            .font(.subheadline)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    
+                                    Text(episode.plot)
+                                        .lineSpacing(4)
+                                        .padding(.top, 4)
+                                }
+                            }
+                            .padding(12)
+                            .background(isHovering ? Color.secondary.opacity(0.1): .clear)
+                        }
+                        .buttonStyle(.plain)
+                        .clipShape(RoundedRectangle(cornerRadius: 9))
+                        .scaleEffect(isHovering ? 1.03: 1)
+                    }
+                }
+            }
+            .padding(.top, 28)
+        } else {
+            EmptyView()
         }
     }
 }

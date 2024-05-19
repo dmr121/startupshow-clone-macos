@@ -14,17 +14,28 @@ struct Watch: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(Authentication.self) private var auth
     
-    let movie: MovieViewModel
+    let media: MediaViewModel
+    
+    @State private var season: Int?
+    @State private var episode: Int?
     
     @State private var secureLink: String?
-    //    "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
     @State private var player = VLCMediaPlayer()
     @State private var isPlaying = false
     @State private var position: Float = 0.0
     @State private var chapterIndex: Int = 0
     
-    init(_ movie: MovieViewModel) {
-        self.movie = movie
+    init(_ media: MediaViewModel) {
+        self.media = media
+        
+        switch media.type {
+        case .tv(let season, let episode):
+            _season = State(initialValue: season)
+            _episode = State(initialValue: episode)
+        default:
+            _season = State(initialValue: nil)
+            _episode = State(initialValue: nil)
+        }
     }
     
     var body: some View {
@@ -53,7 +64,11 @@ struct Watch: View {
         }
         .task {
             do {
-                secureLink = try await movie.getMovieURL(profile: auth.profile)
+                if let season, let episode {
+                    secureLink = try await media.getMediaURL(profile: auth.profile, season: season, episode: episode)
+                } else {
+                    secureLink = try await media.getMediaURL(profile: auth.profile)
+                }
             } catch {
                 print("🚨 Error getting secure link: \(error.localizedDescription)")
             }
@@ -66,7 +81,7 @@ extension Watch {
     @ViewBuilder private func Controls() -> some View {
         VStack {
             HStack {
-                Text(movie.value.title)
+                Text(media.value.title)
                     .font(.title)
                     .fontWeight(.bold)
                 

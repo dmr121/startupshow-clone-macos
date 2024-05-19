@@ -14,7 +14,7 @@ struct Movies: View {
     @Environment(Authentication.self) private var auth
     @Environment(MovieCategoriesViewModel.self) private var movieCategoriesViewModel
     
-    @State private var selectedMovie: MovieViewModel?
+    @State private var selectedMovie: MediaViewModel?
     
     var body: some View {
         GeometryReader { geometry in
@@ -22,7 +22,7 @@ struct Movies: View {
                 MoviesList(geometry: geometry)
             }
             .sheet(item: $selectedMovie) { movie in
-                MovieDetailModal(movie)
+                MediaDetailModal(movie)
                     .frame(minWidth: 750, minHeight: 533)
                     .frame(maxWidth: 1000, maxHeight: 710)
             }
@@ -45,8 +45,8 @@ extension Movies {
         LazyVStack(alignment: .leading, spacing: 18) {
             ForEach(movieCategoriesViewModel.categories) { category in
                 Section {
-                    Carousel(category.movies, columns: columnCount, geometry: geometry) { movie in
-                        MovieCard(movie)
+                    Carousel(category.media, columns: columnCount, geometry: geometry) { movie in
+                        MediaCard(movie, selected: $selectedMovie)
                             .frame(maxWidth: .infinity)
                             .aspectRatio(2/3, contentMode: .fill)
                     }
@@ -63,30 +63,6 @@ extension Movies {
         .padding(.vertical)
         .blur(radius: movieCategoriesViewModel.fetchingCategories ? 20: 0)
         .disabled(movieCategoriesViewModel.fetchingCategories)
-    }
-    
-    @ViewBuilder private func MovieCard(_ movie: MovieViewModel) -> some View {
-        GeometryReader { geometry in
-            HoverScale(scale: 1.05) {
-                Button {
-                    withAnimation { selectedMovie = movie }
-                } label: {
-                    CachedAsyncImage(url: movie.value.meta.poster, urlCache: .imageCache) { image in
-                        image.resizable()
-                            .aspectRatio(contentMode: .fill)
-                    } placeholder: {
-                        ProgressView()
-                            .scaleEffect(0.6)
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(.secondary.opacity(0.2))
-                    .clipShape(RoundedRectangle(cornerRadius: 4, style: .continuous))
-                    .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
-            }
-            .frame(height: geometry.size.width * 1.5)
-        }
     }
 }
 

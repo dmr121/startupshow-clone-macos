@@ -12,7 +12,10 @@ func minutesToHoursAndMinutes(_ minutes: Int) -> String {
     let minutes = minutes % 60
     
     if hours > 0 {
-        return "\(hours)h \(minutes)m"
+        if minutes > 0 {
+            return "\(hours)h \(minutes)m"
+        }
+        return "\(hours)h"
     }
     
     return "\(minutes)m"

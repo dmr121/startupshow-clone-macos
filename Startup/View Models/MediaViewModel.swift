@@ -1,5 +1,5 @@
 //
-//  TVViewModel.swift
+//  MediaViewModel.swift
 //  Startup
 //
 //  Created by David Rozmajzl on 5/19/24.
@@ -9,19 +9,53 @@ import SwiftUI
 import SwiftyJSON
 import KeychainAccess
 
-@Observable class TVViewModel: Identifiable, Hashable {
-    var value: TVShow
-    var favoritingMovie = false
+enum MediaType {
+    case movie
+    case tv(Int, Int)
     
-    init(_ value: TVShow) {
+    var slug: String {
+        switch self {
+        case .movie:
+            return "movie"
+        case .tv:
+            return "tvshow"
+        }
+    }
+    
+    var season: Int? {
+        switch self {
+        case .tv(let season, _):
+            return season
+        default:
+            return nil
+        }
+    }
+    
+    var episode: Int? {
+        switch self {
+        case .tv(_, let episode):
+            return episode
+        default:
+            return nil
+        }
+    }
+}
+
+@Observable class MediaViewModel: Identifiable, Hashable {
+    var value: Media
+    var favoritingMedia = false
+    var type: MediaType
+    
+    init(_ value: Media, _ type: MediaType) {
         self.value = value
+        self.type = type
     }
     
     var id: String {
         return value.id
     }
     
-    static func == (lhs: TVViewModel, rhs: TVViewModel) -> Bool {
+    static func == (lhs: MediaViewModel, rhs: MediaViewModel) -> Bool {
         lhs.id == rhs.id
     }
     
@@ -31,12 +65,20 @@ import KeychainAccess
 }
 
 // MARK: Public methods
-extension TVViewModel {
+extension MediaViewModel {
     @MainActor
-    func getTVURL(profile: Profile?, season: Int, episode: Int) async throws -> String {
+    func getMediaURL(profile: Profile?, season: Int? = nil, episode: Int? = nil) async throws -> String {
         guard let authToken = K.keychain["authToken"] else { throw "Auth token not found" }
         
-        let url = URL(string: "\(K.apiURLBase)/play/tvshow/\(id)/\(season)/\(episode)")!
+        var url: URL
+        
+        switch type {
+        case .movie:
+            url = URL(string: "\(K.apiURLBase)/play/movie/\(id)")!
+        case .tv:
+            guard let season, let episode else { throw "Episode and season required" }
+            url = URL(string: "\(K.apiURLBase)/play/tvshow/\(id)/\(season)/\(episode)")!
+        }
         
         var request = URLRequest(url: url)
         request.setValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization")
@@ -54,14 +96,14 @@ extension TVViewModel {
     
     @MainActor
     func favorite(profile: Profile?) async throws -> String? {
-        withAnimation { favoritingMovie = true }
+        withAnimation { favoritingMedia = true }
         defer {
-            withAnimation { favoritingMovie = false }
+            withAnimation { favoritingMedia = false }
         }
         
         guard let authToken = K.keychain["authToken"] else { throw "Auth token not found" }
         
-        let url = URL(string: "\(K.apiURLBase)/favorite/movie/\(id)")!
+        let url = URL(string: "\(K.apiURLBase)/favorite/\(type.slug)/\(id)")!
         
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -80,14 +122,14 @@ extension TVViewModel {
     
     @MainActor
     func unfavorite(profile: Profile?) async throws -> String? {
-        withAnimation { favoritingMovie = true }
+        withAnimation { favoritingMedia = true }
         defer {
-            withAnimation { favoritingMovie = false }
+            withAnimation { favoritingMedia = false }
         }
         
         guard let authToken = K.keychain["authToken"] else { throw "Auth token not found" }
         
-        let url = URL(string: "\(K.apiURLBase)/favorite/movie/\(id)")!
+        let url = URL(string: "\(K.apiURLBase)/favorite/\(type.slug)/\(id)")!
         
         var request = URLRequest(url: url)
         request.httpMethod = "DELETE"

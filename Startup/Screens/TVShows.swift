@@ -14,7 +14,7 @@ struct TVShows: View {
     @Environment(Authentication.self) private var auth
     @Environment(TVCategoriesViewModel.self) private var tvCategoriesViewModel
     
-    @State private var selectedShow: TVViewModel?
+    @State private var selectedShow: MediaViewModel?
     
     var body: some View {
         GeometryReader { geometry in
@@ -22,7 +22,7 @@ struct TVShows: View {
                 TVList(geometry: geometry)
             }
             .sheet(item: $selectedShow) { tvShow in
-                Text("\(tvShow.value.meta.poster)")
+                MediaDetailModal(tvShow)
                     .frame(minWidth: 750, minHeight: 533)
                     .frame(maxWidth: 1000, maxHeight: 710)
             }
@@ -45,8 +45,8 @@ extension TVShows {
         LazyVStack(alignment: .leading, spacing: 18) {
             ForEach(tvCategoriesViewModel.categories) { category in
                 Section {
-                    Carousel(category.tvShows, columns: columnCount, padding: 8, geometry: geometry) { movie in
-                        TVCard(movie)
+                    Carousel(category.media, columns: columnCount, padding: 8, geometry: geometry) { tvShow in
+                        MediaCard(tvShow, selected: $selectedShow)
                             .frame(maxWidth: .infinity)
                             .aspectRatio(2/3, contentMode: .fill)
                     }
@@ -63,29 +63,5 @@ extension TVShows {
         .padding(.vertical)
         .blur(radius: tvCategoriesViewModel.fetchingCategories ? 20: 0)
         .disabled(tvCategoriesViewModel.fetchingCategories)
-    }
-    
-    @ViewBuilder private func TVCard(_ tvShow: TVViewModel) -> some View {
-        GeometryReader { geometry in
-            HoverScale(scale: 1.05) {
-                Button {
-                    withAnimation { selectedShow = tvShow }
-                } label: {
-                    CachedAsyncImage(url: tvShow.value.meta.poster, urlCache: .imageCache) { image in
-                        image.resizable()
-                            .aspectRatio(contentMode: .fill)
-                    } placeholder: {
-                        ProgressView()
-                            .scaleEffect(0.6)
-                    }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(.secondary.opacity(0.2))
-                    .clipShape(RoundedRectangle(cornerRadius: 4, style: .continuous))
-                    .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
-            }
-            .frame(height: geometry.size.width * 1.5)
-        }
     }
 }

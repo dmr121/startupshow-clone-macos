@@ -10,7 +10,7 @@ import SwiftUI
 struct MainView: View {
     @Environment(Authentication.self) private var auth
     
-    @State private var tab: Tab? = .movies
+    @State private var tab: Tab? = .tv
     @State private var searchQuery: String = ""
     @State private var showLogoutAlert = false
     
@@ -29,8 +29,8 @@ struct MainView: View {
                 // Get user
                 // get profile data
             }
-            .navigationDestination(for: MovieViewModel.self) { movie in
-                Watch(movie)
+            .navigationDestination(for: MediaViewModel.self) { media in
+                Watch(media)
             }
         }
         .environment(navigation)
