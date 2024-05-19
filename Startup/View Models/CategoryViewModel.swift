@@ -9,18 +9,6 @@ import SwiftUI
 import SwiftyJSON
 import KeychainAccess
 
-@Observable class MovieViewModel: Identifiable {
-    var value: Movie
-    
-    init(_ value: Movie) {
-        self.value = value
-    }
-    
-    var id: String {
-        return value.id
-    }
-}
-
 @Observable class CategoryViewModel: Identifiable {
     var value: Category
     var movies: [MovieViewModel]

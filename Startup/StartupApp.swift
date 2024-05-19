@@ -25,7 +25,7 @@ struct StartupApp: App {
     
     @State private var auth = Authentication()
     @State private var categoriesViewModel = CategoriesViewModel()
-
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
@@ -34,7 +34,6 @@ struct StartupApp: App {
                 .environment(auth)
                 .environment(categoriesViewModel)
         }
-//        .windowStyle(.hiddenTitleBar)
         .modelContainer(sharedModelContainer)
     }
 }

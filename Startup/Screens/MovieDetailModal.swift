@@ -11,15 +11,15 @@ import Foundation
 
 struct MovieDetailModal: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(Navigation.self) private var navigation
     @Environment(Authentication.self) private var auth
     @Environment(CategoriesViewModel.self) private var categoriesViewModel
     
-    let movie: Movie
+    let movie: MovieViewModel
     
     @State private var secureLink: String?
-    @State private var pre = false
     
-    init(_ movie: Movie) {
+    init(_ movie: MovieViewModel) {
         self.movie = movie
     }
     
@@ -27,7 +27,7 @@ struct MovieDetailModal: View {
         GeometryReader { geometry in
             ScrollView {
                 ZStack {
-                    CachedAsyncImage(url: movie.meta.fanart, urlCache: .imageCache) { image in
+                    CachedAsyncImage(url: movie.value.meta.fanart, urlCache: .imageCache) { image in
                         image.resizable()
                             .aspectRatio(contentMode: .fill)
                     } placeholder: {
@@ -42,8 +42,6 @@ struct MovieDetailModal: View {
                     // Dismiss button
                     VStack {
                         HStack {
-                            Spacer()
-                            
                             Hover { isHovering in
                                 Button {
                                     dismiss()
@@ -63,11 +61,13 @@ struct MovieDetailModal: View {
                                 }
                                 .buttonStyle(.plain)
                             }
+                            
+                            Spacer()
                         }
                         
                         Spacer()
                     }
-                    .padding(8)
+                    .padding(12)
                 }
                 
                 // Details
@@ -76,16 +76,18 @@ struct MovieDetailModal: View {
                         .frame(height: 200)
                     
                     VStack(alignment: .leading, spacing: 10) {
-                        Text(movie.title)
+                        Text(movie.value.title)
                             .font(.largeTitle)
                             .fontWeight(.bold)
                         
                         // Actions
                         HStack(spacing: 20) {
-                            Hover{ isHovering in
-                                Button(action: getSecureLink) {
+                            Hover { isHovering in
+                                Button {
+                                    navigation.paths.append(movie)
+                                } label: {
                                     HStack {
-                                        Label("Watch", systemImage: "eye.fill")
+                                        Label("Play", systemImage: "play.fill")
                                             .font(.title3)
                                             .fontWeight(.bold)
                                     }
@@ -100,7 +102,7 @@ struct MovieDetailModal: View {
                             }
                             
                             HStack(spacing: 15) {
-                                if let trailerURL = movie.meta.trailer {
+                                if let trailerURL = movie.value.meta.trailer {
                                     Hover { isHovering in
                                         Link(destination: trailerURL) {
                                             Label("Trailer", systemImage: "movieclapper.fill")
@@ -125,10 +127,22 @@ struct MovieDetailModal: View {
                                 }
                                 
                                 Hover { isHovering in
-                                    Button(action: {
-                                        openVLC()
-                                    }) {
-                                        Label("Favorite", systemImage: "star")
+                                    Button {
+                                        Task {
+                                            do {
+                                                if movie.value.is_favorite ?? false {
+                                                    try await movie.unfavorite(profile: auth.profile)
+                                                } else {
+                                                    try await movie.favorite(profile: auth.profile)
+                                                }
+                                            } catch {
+                                                print("🚨 Error toggling favorite movie: \(error.localizedDescription)")
+                                            }
+                                        }
+                                    } label: {
+                                        // Show solid star if movie is a favorite or if it's currently being marked as a favorite
+                                        let showFavorite = (movie.value.is_favorite ?? false) ? movie.favoritingMovie ? false: true: movie.favoritingMovie ? true: false
+                                        Label("Favorite", systemImage: showFavorite ? "star.fill": "star")
                                             .font(.system(size: 16))
                                             .labelStyle(.iconOnly)
                                             .frame(width: 34, height: 34)
@@ -154,7 +168,7 @@ struct MovieDetailModal: View {
                             VStack(alignment: .leading) {
                                 HStack(spacing: 16) {
                                     // Released Year
-                                    Text(movie.meta.year)
+                                    Text(movie.value.meta.year)
                                     
                                     // IMDB Rank
                                     HStack(spacing: 4) {
@@ -165,11 +179,11 @@ struct MovieDetailModal: View {
                                             .background(.secondary)
                                             .clipShape(RoundedRectangle(cornerRadius: 2))
                                         
-                                        Text(String(format: "%.1f", movie.meta.rank))
+                                        Text(String(format: "%.1f", movie.value.meta.rank))
                                     }
                                     
                                     // Runtime
-                                    if let minutes = Int(movie.meta.runtime) {
+                                    if let minutes = Int(movie.value.meta.runtime) {
                                         Text(minutesToHoursAndMinutes(minutes))
                                     }
                                 }
@@ -177,7 +191,7 @@ struct MovieDetailModal: View {
                                 
                                 HStack(spacing: 16) {
                                     // MPPA Rating
-                                    Text(movie.meta.mppa)
+                                    Text(movie.value.meta.mppa)
                                         .padding(.horizontal, 12)
                                         .padding(.vertical, 1.5)
                                         .overlay {
@@ -186,10 +200,10 @@ struct MovieDetailModal: View {
                                         }
                                     
                                     // Genres
-                                    Text(movie.meta.genres)
+                                    Text(movie.value.meta.genres)
                                 }
                                 
-                                Text(movie.meta.plot)
+                                Text(movie.value.meta.plot)
                                     .lineSpacing(6)
                                     .padding(.top)
                             }
@@ -199,14 +213,14 @@ struct MovieDetailModal: View {
                                 Group {
                                     Text("Cast: ")
                                         .foregroundStyle(.secondary.opacity(0.6)) +
-                                    Text(movie.meta.cast)
+                                    Text(movie.value.meta.cast)
                                 }
                                 .lineSpacing(4)
                                 
                                 Group {
                                     Text("Director: ")
                                         .foregroundStyle(.secondary.opacity(0.6)) +
-                                    Text(movie.meta.director)
+                                    Text(movie.value.meta.director)
                                 }
                                 .lineSpacing(4)
                             }
@@ -224,23 +238,5 @@ struct MovieDetailModal: View {
             .scrollBounceBehavior(.basedOnSize)
         }
         .background(Color.background)
-        .sheet(isPresented: $pre, content: {
-            MovieDetailModal(movie)
-                .frame(minWidth: 750, minHeight: 533)
-                .frame(maxWidth: 1000, maxHeight: 710)
-        })
-    }
-}
-
-// MARK: Private methods
-extension MovieDetailModal {
-    private func getSecureLink() {
-        Task {
-            do {
-                secureLink = try await categoriesViewModel.getMovieURL(withId: movie.id, profile: auth.profile)
-            } catch {
-                print("🚨 Error getting secure link: \(error.localizedDescription)")
-            }
-        }
     }
 }

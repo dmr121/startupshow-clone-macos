@@ -14,7 +14,7 @@ struct Movies: View {
     @Environment(Authentication.self) private var auth
     @Environment(CategoriesViewModel.self) private var categoriesViewModel
     
-    @State private var selectedMovie: Movie?
+    @State private var selectedMovie: MovieViewModel?
     
     var body: some View {
         GeometryReader { geometry in
@@ -74,7 +74,7 @@ extension Movies {
                 Button {
                     withAnimation { selectedMovie = movie }
                 } label: {
-                    CachedAsyncImage(url: movie.meta.poster, urlCache: .imageCache) { image in
+                    CachedAsyncImage(url: movie.value.meta.poster, urlCache: .imageCache) { image in
                         image.resizable()
                             .aspectRatio(contentMode: .fill)
                     } placeholder: {

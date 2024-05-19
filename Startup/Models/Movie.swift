@@ -19,7 +19,7 @@ struct Movie: Identifiable, Equatable, Hashable {
     let released: String
     let mpa: String
     let history: History?
-    let is_favorite: Bool?
+    var is_favorite: Bool?
     let meta: Meta
     let languages: [String]
     
@@ -45,6 +45,17 @@ struct Movie: Identifiable, Equatable, Hashable {
     
     static func == (lhs: Movie, rhs: Movie) -> Bool {
         lhs.id == rhs.id
+    }
+}
+
+// MARK: Public methods
+extension Movie {
+    mutating func toggleFavorite(to favorite: Bool? = nil) {
+        guard let favorite else {
+            is_favorite = !(is_favorite ?? false)
+            return
+        }
+        is_favorite = favorite
     }
 }
 

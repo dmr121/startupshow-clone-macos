@@ -6,5 +6,5 @@ target 'Startup' do
   use_frameworks!
 
   # Pods for Startup
-
+  pod 'VLCKit', '~>3.3.0'
 end

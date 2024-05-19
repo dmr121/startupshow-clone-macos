@@ -14,18 +14,26 @@ struct MainView: View {
     @State private var searchQuery: String = ""
     @State private var showLogoutAlert = false
     
+    @State private var navigation = Navigation()
+    
     var body: some View {
-        NavigationSplitView {
-            Sidebar()
-                .navigationSplitViewColumnWidth(min: 120, ideal: 180, max: 250)
-                .searchable(text: $searchQuery, placement: .sidebar)
-        } detail: {
-            Text("Select a tab.")
+        NavigationStack(path: $navigation.paths) {
+            NavigationSplitView {
+                Sidebar()
+                    .navigationSplitViewColumnWidth(min: 120, ideal: 180, max: 250)
+                    .searchable(text: $searchQuery, placement: .sidebar)
+            } detail: {
+                Text("Select a tab.")
+            }
+            .task {
+                // Get user
+                // get profile data
+            }
+            .navigationDestination(for: MovieViewModel.self) { movie in
+                Watch(movie)
+            }
         }
-        .task {
-            // Get user
-            // get profile data
-        }
+        .environment(navigation)
     }
 }
 

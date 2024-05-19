@@ -16,26 +16,7 @@ import KeychainAccess
 }
 
 // MARK: Public methods
-extension CategoriesViewModel {
-    @MainActor
-    func getMovieURL(withId id: String, profile: Profile?) async throws -> String {
-        guard let authToken = K.keychain["authToken"] else { throw "Auth token not found" }
-        
-        let url = URL(string: "\(K.apiURLBase)/play/movie/\(id)")!
-        
-        var request = URLRequest(url: url)
-        request.setValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization")
-        if let profile {
-            request.setValue("X-API-PROFILE", forHTTPHeaderField: "\(profile.profileNumber)")
-        }
-        let (responseData, _) = try await URLSession.shared.data(for: request)
-        
-        let json = try JSON(data: responseData)
-        let secureLink = json["data"]["secure_link"].string
-        if let secureLink { return secureLink }
-        throw "Couldn't get secure link"
-    }
-    
+extension CategoriesViewModel {    
     @MainActor
     func getCategories(profile: Profile?) async throws {
         // Make sure 10 minutes have passed
