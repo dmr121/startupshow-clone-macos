@@ -168,8 +168,12 @@ struct MediaDetailModal: View {
                                     }
                                     
                                     // Runtime
-                                    if let minutes = Int(media.value.meta.runtime) {
-                                        Text(minutesToHoursAndMinutes(minutes))
+                                    if let numSeasons = media.value.seasons?.count {
+                                        Text("\(numSeasons) Season\(numSeasons > 1 ? "s": "")")
+                                    } else {
+                                        if let minutes = Int(media.value.meta.runtime) {
+                                            Text(minutesToHoursAndMinutes(minutes))
+                                        }
                                     }
                                     
                                     Spacer()
@@ -283,9 +287,26 @@ struct MediaDetailModal: View {
 // MARK: Views {
 extension MediaDetailModal {
     @ViewBuilder private func Episodes() -> some View {
-        if let episodes = media.value.seasons?[season] {
+        if let seasons = media.value.seasons {
             VStack(alignment: .leading, spacing: 0) {
-                ForEach(episodes) { episode in
+                Menu {
+                    ForEach(Array(seasons.enumerated()), id: \.offset) { index, _ in
+                        Button("Season \(index + 1)") {
+                            self.season = index
+                        }
+                        Divider()
+                    }
+                } label: {
+                    Text("Season \(season + 1)")
+                        .font(.title3)
+                        .fontWeight(.semibold)
+                }
+                .fixedSize()
+                .padding(.horizontal, 12)
+                .padding(.bottom, 6)
+                .menuStyle(.borderlessButton)
+                
+                ForEach(seasons[season]) { episode in
                     Hover { isHovering in
                         Button {
                             media.type = .tv(episode.season, episode.episode)
@@ -318,6 +339,8 @@ extension MediaDetailModal {
                                         .lineSpacing(4)
                                         .padding(.top, 4)
                                 }
+                                
+                                Spacer()
                             }
                             .padding(12)
                             .background(isHovering ? Color.secondary.opacity(0.1): .clear)

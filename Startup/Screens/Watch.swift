@@ -39,23 +39,20 @@ struct Watch: View {
     }
     
     var body: some View {
-        Hover { isHovering in
-            GeometryReader { geometry in
-                ZStack {
-                    if let secureLink, let url = URL(string: secureLink) {
-                        VLCPlayerRepresentable(player: player, url: url, isPlaying: $isPlaying, position: $position, chapterIndex: $chapterIndex)
-                            .onAppear {
-                                player.play()
-                            }
-                        
-                        Controls()
-                            .opacity(isHovering ? 1: 0)
-                    } else {
-                        ProgressView()
-                    }
+        GeometryReader { geometry in
+            ZStack {
+                if let secureLink, let url = URL(string: secureLink) {
+                    VLCPlayerRepresentable(player: player, url: url, isPlaying: $isPlaying, position: $position, chapterIndex: $chapterIndex)
+                        .onAppear {
+                            player.play()
+                        }
+                    
+                    Controls()
+                } else {
+                    ProgressView()
                 }
-                .frame(width: geometry.size.width, height: geometry.size.height)
             }
+            .frame(width: geometry.size.width, height: geometry.size.height)
         }
         .background(.black)
         .toolbar(.hidden, for: .windowToolbar)
@@ -81,6 +78,20 @@ extension Watch {
     @ViewBuilder private func Controls() -> some View {
         VStack {
             HStack {
+                Hover { isHovering in
+                    Button {
+                        dismiss()
+                    } label: {
+                        Image(systemName: "arrow.backward")
+                            .font(.system(size: 24))
+                            .fontWeight(.bold)
+                            .foregroundStyle(.white.opacity(isHovering ? 0.75: 0.6))
+                            .padding(7)
+                    }
+                    .buttonStyle(.plain)
+                    .scaleEffect(isHovering ? 1.05: 1)
+                }
+                
                 Text(media.value.title)
                     .font(.title)
                     .fontWeight(.bold)
