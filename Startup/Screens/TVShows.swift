@@ -29,12 +29,10 @@ struct TVShows: View {
         }
         .task {
             do {
-                withAnimation { tvCategoriesViewModel.fetchingCategories = true }
                 try await tvCategoriesViewModel.getCategories(profile: auth.profile)
             } catch {
                 print("🚨 Error fetching categories: \(error.localizedDescription)")
             }
-            withAnimation { tvCategoriesViewModel.fetchingCategories = false }
         }
     }
 }
@@ -44,19 +42,23 @@ extension TVShows {
     @ViewBuilder private func TVList(geometry: GeometryProxy) -> some View {
         LazyVStack(alignment: .leading, spacing: 18) {
             ForEach(tvCategoriesViewModel.categories) { category in
-                Section {
-                    Carousel(category.media, columns: columnCount, padding: 8, geometry: geometry) { tvShow in
-                        MediaCard(tvShow, selected: $selectedShow)
-                            .frame(maxWidth: .infinity)
-                            .aspectRatio(2/3, contentMode: .fill)
+                if category.media.count > 0 {
+                    Section {
+                        Carousel(category.media, columns: columnCount, padding: 8, geometry: geometry) { tvShow in
+                            MediaCard(tvShow, selected: $selectedShow)
+                                .frame(maxWidth: .infinity)
+                                .aspectRatio(2/3, contentMode: .fill)
+                        }
+                    } header: {
+                        Text(category.value.name)
+                            .font(.title2)
+                            .fontWeight(.bold)
+                            .padding(.horizontal, 11)
+                            .padding(.bottom, -12)
+                            .padding(.leading, 6 * 2)
                     }
-                } header: {
-                    Text(category.value.name)
-                        .font(.title2)
-                        .fontWeight(.bold)
-                        .padding(.horizontal, 11)
-                        .padding(.bottom, -12)
-                        .padding(.leading, 6 * 2)
+                } else {
+                    EmptyView()
                 }
             }
         }

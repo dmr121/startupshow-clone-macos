@@ -37,9 +37,14 @@ struct Media: Identifiable, Equatable, Hashable {
         history = try? History(from: json["history"])
         is_favorite = json["is_favorite"].bool
         meta = try Meta(from: json["meta"])
-        seasons = try? json["meta_episodes"].array?.map { season in
+        
+        let seasons = try? json["meta_episodes"].array?.compactMap { season in
             try season.arrayValue.map { episode in try Episode(from: episode) }
         }
+        if (seasons?.count ?? 0) > 0 {
+            self.seasons = seasons
+        } else { self.seasons = nil }
+        
         languages = json["languages"].arrayObject?.map { $0 as! String } ?? []
     }
     

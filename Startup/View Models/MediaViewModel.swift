@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftyJSON
 import KeychainAccess
 
-enum MediaType {
+enum MediaType: Equatable {
     case movie
     case tv(Int, Int)
     

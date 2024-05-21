@@ -10,10 +10,17 @@ import AlertToast
 import CachedAsyncImage
 import Foundation
 
+enum Screen {
+    case movies
+    case tv
+    case favorites
+}
+
 struct MediaDetailModal: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(Navigation.self) private var navigation
     @Environment(Authentication.self) private var auth
+    @Environment(FavoritesViewModel.self) private var favorites
     
     let media: MediaViewModel
     
@@ -106,17 +113,7 @@ struct MediaDetailModal: View {
                                 Hover { isHovering in
                                     Button {
                                         Task {
-                                            do {
-                                                if media.value.is_favorite ?? false {
-                                                    unfavoriteSuccessMessage = try await media.unfavorite(profile: auth.profile)
-                                                    unfavoriteSuccess = true
-                                                } else {
-                                                    favoriteSuccessMessage = try await media.favorite(profile: auth.profile)
-                                                    favoriteSuccess = true
-                                                }
-                                            } catch {
-                                                print("🚨 Error toggling favorite movie: \(error.localizedDescription)")
-                                            }
+                                           await toggleFavorite()
                                         }
                                     } label: {
                                         // Show solid star if movie is a favorite or if it's currently being marked as a favorite
@@ -239,7 +236,6 @@ struct MediaDetailModal: View {
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.top, -200)
-                
             }
             .scrollBounceBehavior(.basedOnSize)
             
@@ -337,6 +333,7 @@ extension MediaDetailModal {
                                     
                                     Text(episode.plot)
                                         .lineSpacing(4)
+                                        .lineLimit(4)
                                         .padding(.top, 4)
                                 }
                                 
@@ -354,6 +351,32 @@ extension MediaDetailModal {
             .padding(.top, 28)
         } else {
             EmptyView()
+        }
+    }
+}
+
+// MARK: Private methods
+extension MediaDetailModal {
+    private func toggleFavorite() async {
+        do {
+            if media.value.is_favorite ?? false {
+                unfavoriteSuccessMessage = try await media.unfavorite(profile: auth.profile)
+                unfavoriteSuccess = true
+                
+                favorites.movies.removeAll { $0.id == media.id }
+                favorites.tvShows.removeAll { $0.id == media.id }
+            } else {
+                favoriteSuccessMessage = try await media.favorite(profile: auth.profile)
+                favoriteSuccess = true
+                
+                if media.type == .movie {
+                    favorites.movies.append(media)
+                } else {
+                    favorites.tvShows.append(media)
+                }
+            }
+        } catch {
+            print("🚨 Error toggling favorite movie: \(error.localizedDescription)")
         }
     }
 }

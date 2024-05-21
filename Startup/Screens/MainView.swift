@@ -10,7 +10,7 @@ import SwiftUI
 struct MainView: View {
     @Environment(Authentication.self) private var auth
     
-    @State private var tab: Tab? = .tv
+    @State private var tab: Tab? = .movies
     @State private var searchQuery: String = ""
     @State private var showLogoutAlert = false
     

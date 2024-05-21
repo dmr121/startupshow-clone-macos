@@ -15,27 +15,34 @@ struct VLCPlayerRepresentable: NSViewRepresentable {
     let mediaURL: URL
     @Binding var isPlaying: Bool
     @Binding var position: Float
+    @Binding var mediaLength: VLCTime
+    @Binding var time: VLCTime
+    @Binding var timeRemaining: VLCTime?
     @Binding var chapterIndex: Int
     
-    init(player: VLCMediaPlayer, url: URL, isPlaying: Binding<Bool>, position: Binding<Float>, chapterIndex: Binding<Int>) {
+    init(player: VLCMediaPlayer, url: URL, isPlaying: Binding<Bool>, position: Binding<Float>, mediaLength: Binding<VLCTime>, time: Binding<VLCTime>, timeRemaining: Binding<VLCTime?>, chapterIndex: Binding<Int>) {
         self.player = player
         self.mediaURL = url
         _isPlaying = isPlaying
         _position = position
+        _mediaLength = mediaLength
+        _time = time
+        _timeRemaining = timeRemaining
         _chapterIndex = chapterIndex
     }
     
     func makeNSView(context: Context) -> VLCVideoView {
         let view = VLCVideoView()
+        
         player.drawable = view
         player.media = VLCMedia(url: mediaURL)
         player.delegate = context.coordinator
+        
         return view
     }
     
     func updateNSView(_ nsView: VLCVideoView, context: Context) {
         context.coordinator.representable = self
-        // Do something when position changes
     }
     
     func makeCoordinator() -> Coordinator {
@@ -43,39 +50,44 @@ struct VLCPlayerRepresentable: NSViewRepresentable {
     }
 }
 
-class Coordinator: NSObject, VLCMediaPlayerDelegate { //, maybe delegate
-    var representable: VLCPlayerRepresentable
-    
-    init(representable: VLCPlayerRepresentable) {
-        self.representable = representable
-    }
-    
-    func mediaPlayerStateChanged(_ notification: Notification) {
-        guard let player = notification.object as? VLCMediaPlayer else { return }
+extension VLCPlayerRepresentable {
+    class Coordinator: NSObject, VLCMediaPlayerDelegate { //, maybe delegate
+        var representable: VLCPlayerRepresentable
         
-        switch player.state {
-        case .playing:
-            representable.isPlaying = true
-        case .ended, .paused, .stopped:
-            representable.isPlaying = false
-        default:
-            break
+        init(representable: VLCPlayerRepresentable) {
+            self.representable = representable
         }
-    }
-    
-    func mediaPlayerTimeChanged(_ notification: Notification!) {
-        guard let player = notification.object as? VLCMediaPlayer else { return }
-        representable.isPlaying = player.isPlaying
-        representable.position = player.position
-    }
-    
-    func mediaPlayerChapterChanged(_ notification: Notification!) {
-        guard let player = notification.object as? VLCMediaPlayer else { return }
-        representable.chapterIndex = Int(player.currentChapterIndex)
-    }
-    
-    func mediaPlayerLoudnessChanged(_ notification: Notification!) {
-        guard let player = notification.object as? VLCMediaPlayer else { return }
-        // player.audio.volume
+        
+        func mediaPlayerStateChanged(_ notification: Notification) {
+            guard let player = notification.object as? VLCMediaPlayer else { return }
+            
+            switch player.state {
+            case .playing:
+                representable.isPlaying = true
+            case .ended, .paused, .stopped:
+                representable.isPlaying = false
+            default:
+                break
+            }
+        }
+        
+        func mediaPlayerTimeChanged(_ notification: Notification!) {
+            guard let player = notification.object as? VLCMediaPlayer else { return }
+            representable.isPlaying = player.isPlaying
+            representable.position = player.position
+            representable.timeRemaining = player.remainingTime
+            representable.time = player.time
+            representable.mediaLength = player.media.length
+        }
+        
+        func mediaPlayerChapterChanged(_ notification: Notification!) {
+            guard let player = notification.object as? VLCMediaPlayer else { return }
+            representable.chapterIndex = Int(player.currentChapterIndex)
+        }
+        
+        func mediaPlayerLoudnessChanged(_ notification: Notification!) {
+            guard let player = notification.object as? VLCMediaPlayer else { return }
+            // player.audio.volume
+        }
     }
 }

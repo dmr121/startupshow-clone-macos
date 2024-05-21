@@ -23,6 +23,11 @@ extension TVCategoriesViewModel {
         if let lastFetched, Date().timeIntervalSince(lastFetched) < 10 * 60 { return }
         lastFetched = Date()
         
+        withAnimation { fetchingCategories = true }
+        defer {
+            withAnimation { fetchingCategories = false }
+        }
+        
         guard let authToken = K.keychain["authToken"] else { throw "Auth token not found" }
         
         let url = URL(string: "\(K.apiURLBase)/info/tvshows/categories")!
@@ -41,7 +46,7 @@ extension TVCategoriesViewModel {
         // Get all tv shows from all categories
         try await withThrowingTaskGroup(of: Void.self) { group in
             self.categories.forEach { category in
-                if category.id == "51" || category.id == "52" {
+                if category.id == "51" {
                     group.addTask {
                         try await category.getTVShows(profile: profile)
                     }

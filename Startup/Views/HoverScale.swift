@@ -9,15 +9,12 @@ import SwiftUI
 
 struct HoverScale<Content: View>: View {
     let scale: CGFloat
-    let highlight: Color?
     @ViewBuilder let content: Content
     
     @State private var isHovering = false
     
-    // TODO: Maybe remove highlight
-    init(scale: CGFloat, highlight: Color? = nil, content: () -> Content) {
+    init(scale: CGFloat, content: () -> Content) {
         self.scale = scale
-        self.highlight = highlight
         self.content = content()
     }
     

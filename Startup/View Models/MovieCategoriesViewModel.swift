@@ -23,6 +23,11 @@ extension MovieCategoriesViewModel {
         if let lastFetched, Date().timeIntervalSince(lastFetched) < 10 * 60 { return }
         lastFetched = Date()
         
+        withAnimation { fetchingCategories = true }
+        defer {
+            withAnimation { fetchingCategories = false }
+        }
+        
         guard let authToken = K.keychain["authToken"] else { throw "Auth token not found" }
         
         let url = URL(string: "\(K.apiURLBase)/info/movies/categories")!
@@ -41,7 +46,7 @@ extension MovieCategoriesViewModel {
         // Get all movies from all categories
         try await withThrowingTaskGroup(of: Void.self) { group in
             self.categories.forEach { category in
-                if category.id == "1" || category.id == "2" {
+                if category.id == "1" {
                     group.addTask {
                         try await category.getMovies(profile: profile)
                     }
