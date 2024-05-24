@@ -18,7 +18,7 @@ struct Media: Identifiable, Equatable, Hashable {
     let year: Int
     let released: String
     let mpa: String
-    let history: History?
+    var history: History?
     var is_favorite: Bool?
     let meta: Meta
     let seasons: [[Episode]]?
@@ -124,18 +124,44 @@ extension Media {
     }
     
     struct History: Identifiable, Hashable {
-        let seconds: Int?
+        var seconds: Int?
         let imdb_id: String
         let type: String
+        var recent: EpisodeHistory?
+        var data: [EpisodeHistory]?
         
         init(from json: JSON) throws {
             seconds = json["data"]["seconds"].int
             imdb_id = json["imdb_id"].stringValue
             type = json["type"].stringValue
+            recent = try? EpisodeHistory(from: json["recent"])
+            
+            var dataArray = [EpisodeHistory]()
+            for (_, subJson) in json["data"].dictionaryValue {
+                if let entry = try? EpisodeHistory(from: subJson) {
+                    dataArray.append(entry)
+                }
+            }
+        
+            self.data = dataArray.count > 0 ? dataArray: nil
         }
         
         var id: String {
             return imdb_id
+        }
+    }
+    
+    struct EpisodeHistory: Hashable {
+        var seconds: Int
+        let looksWatched : Bool?
+        let episode: Int
+        let season: Int
+        
+        init(from json: JSON) throws {
+            seconds = json["seconds"].intValue
+            looksWatched = json["looks_watched"].bool
+            episode = json["episode"].intValue
+            season = json["season"].intValue
         }
     }
     

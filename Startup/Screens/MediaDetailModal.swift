@@ -305,7 +305,7 @@ extension MediaDetailModal {
                 ForEach(seasons[season]) { episode in
                     Hover { isHovering in
                         Button {
-                            media.type = .tv(episode.season, episode.episode)
+                            media.type = .tv(episode.season, episode.episode, episode.duration)
                             navigation.paths.append(media)
                         } label: {
                             HStack(spacing: 13) {

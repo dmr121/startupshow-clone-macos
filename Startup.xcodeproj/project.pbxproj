@@ -41,6 +41,8 @@
 		1E1787CC2BFD32B400BDB45E /* Dimensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1787CB2BFD32B400BDB45E /* Dimensions.swift */; };
 		1E1787CE2BFD46D200BDB45E /* PlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1787CD2BFD46D200BDB45E /* PlayerViewModel.swift */; };
 		1E1787D02BFD55C500BDB45E /* Subtitles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1787CF2BFD55C500BDB45E /* Subtitles.swift */; };
+		1E1787D22C004DDF00BDB45E /* LiveTVCategoriesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1787D12C004DDF00BDB45E /* LiveTVCategoriesViewModel.swift */; };
+		1E1787D42C004F2800BDB45E /* LiveTVCategoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1787D32C004F2800BDB45E /* LiveTVCategoryViewModel.swift */; };
 		1E1E32772BF7EC3A00519351 /* minutesToHoursAndMinutes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1E32762BF7EC3A00519351 /* minutesToHoursAndMinutes.swift */; };
 		1E1E32792BF7F6C900519351 /* VLC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1E32782BF7F6C900519351 /* VLC.swift */; };
 		1E1E327D2BF83E6F00519351 /* Watch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1E327C2BF83E6F00519351 /* Watch.swift */; };
@@ -113,6 +115,8 @@
 		1E1787CB2BFD32B400BDB45E /* Dimensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dimensions.swift; sourceTree = "<group>"; };
 		1E1787CD2BFD46D200BDB45E /* PlayerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewModel.swift; sourceTree = "<group>"; };
 		1E1787CF2BFD55C500BDB45E /* Subtitles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subtitles.swift; sourceTree = "<group>"; };
+		1E1787D12C004DDF00BDB45E /* LiveTVCategoriesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveTVCategoriesViewModel.swift; sourceTree = "<group>"; };
+		1E1787D32C004F2800BDB45E /* LiveTVCategoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveTVCategoryViewModel.swift; sourceTree = "<group>"; };
 		1E1E32762BF7EC3A00519351 /* minutesToHoursAndMinutes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = minutesToHoursAndMinutes.swift; sourceTree = "<group>"; };
 		1E1E32782BF7F6C900519351 /* VLC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VLC.swift; sourceTree = "<group>"; };
 		1E1E327C2BF83E6F00519351 /* Watch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Watch.swift; sourceTree = "<group>"; };
@@ -292,7 +296,9 @@
 				1E1787B52BFBB6B400BDB45E /* FavoritesViewModel.swift */,
 				1EB9E6C92BF58E1E0064EB6F /* MovieCategoriesViewModel.swift */,
 				1E1787AB2BFA82BF00BDB45E /* TVCategoriesViewModel.swift */,
+				1E1787D12C004DDF00BDB45E /* LiveTVCategoriesViewModel.swift */,
 				1EC570BB2BF6F5CA008FCD51 /* CategoryViewModel.swift */,
+				1E1787D32C004F2800BDB45E /* LiveTVCategoryViewModel.swift */,
 				1E1787B12BFA9B7E00BDB45E /* MediaViewModel.swift */,
 				1E1787CD2BFD46D200BDB45E /* PlayerViewModel.swift */,
 			);
@@ -496,6 +502,7 @@
 				1E1787C62BFC011900BDB45E /* FullScreenMonitor.swift in Sources */,
 				1E1787A72BFA76E800BDB45E /* Int+Extension.swift in Sources */,
 				1EB9E69A2BF55EE50064EB6F /* LiveTV.swift in Sources */,
+				1E1787D42C004F2800BDB45E /* LiveTVCategoryViewModel.swift in Sources */,
 				1E1787D02BFD55C500BDB45E /* Subtitles.swift in Sources */,
 				1EB9E6CC2BF5914C0064EB6F /* MockData.swift in Sources */,
 				1EB9E6822BF43D180064EB6F /* ContentView.swift in Sources */,
@@ -516,6 +523,7 @@
 				1EB9E6D32BF651150064EB6F /* Carousel.swift in Sources */,
 				1EB9E6802BF43D180064EB6F /* StartupApp.swift in Sources */,
 				1EB9E6AF2BF5679E0064EB6F /* LoginResponse.swift in Sources */,
+				1E1787D22C004DDF00BDB45E /* LiveTVCategoriesViewModel.swift in Sources */,
 				1EC570B62BF6E10A008FCD51 /* Media.swift in Sources */,
 				1EB9E6C32BF579C00064EB6F /* Profiles.swift in Sources */,
 				1EB9E69C2BF55EF00064EB6F /* Favorites.swift in Sources */,

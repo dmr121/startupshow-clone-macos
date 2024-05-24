@@ -12,6 +12,7 @@ struct Category: Identifiable, Hashable {
     let id: String
     let name: String
     let index: Int
+    let active: Bool?
     let type: String
     let isGenre: Bool
     let logoURL: URL?
@@ -22,6 +23,7 @@ struct Category: Identifiable, Hashable {
         id = json["id"].stringValue
         name = json["name"].stringValue
         index = json["index"].intValue
+        active = json["active"].bool
         type = json["type"].stringValue
         isGenre = json["is_genre"].boolValue
         logoURL = json["logo_url"].url

@@ -88,7 +88,7 @@ extension FavoritesViewModel {
             return try Media(from: jsonT)
         }
         
-        withAnimation { self.tvShows = tvShows.map { MediaViewModel($0, .tv(0, 0)) } }
+        withAnimation { self.tvShows = tvShows.map { MediaViewModel($0, .tv(0, 0, 0)) } }
     }
     
     // livetv -> https://tvnow.best/api/favorite/livetv/list/0/50/alphabetic?include_full_tv_guide=0

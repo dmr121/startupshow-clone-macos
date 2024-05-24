@@ -1,0 +1,55 @@
+//
+//  LiveTVCategoryViewModel.swift
+//  Startup
+//
+//  Created by David Rozmajzl on 5/24/24.
+//
+
+import SwiftUI
+import SwiftyJSON
+import KeychainAccess
+
+@Observable class LiveTVCategoryViewModel: Identifiable {
+    var value: Category
+    var media: [MediaViewModel]
+    var fetchingMedia: Bool
+    
+    init(_ value: Category, media: [MediaViewModel] = [MediaViewModel]()) {
+        self.value = value
+        self.media = media
+        self.fetchingMedia = true
+    }
+    
+    var id: String {
+        return value.id
+    }
+}
+
+// MARK: Public methods
+extension LiveTVCategoryViewModel {
+    @MainActor
+    func getShows(profile: Profile?) async throws {
+        withAnimation { fetchingMedia = true }
+        defer {
+            withAnimation { fetchingMedia = false }
+        }
+        
+        guard let authToken = K.keychain["authToken"] else { throw "Auth token not found" }
+        
+        let url = URL(string: "\(K.apiURLBase)/info/livetv/categories/\(id)")!
+        
+        var request = URLRequest(url: url)
+        request.setValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization")
+        if let profile {
+            request.setValue("\(profile.profileNumber)", forHTTPHeaderField: "X-API-PROFILE")
+        }
+        let (responseData, _) = try await URLSession.shared.data(for: request)
+        
+        let json = try JSON(data: responseData)
+        let movies = try json["data"]["infos"].arrayValue.compactMap { jsonM in
+            return try Media(from: jsonM)
+        }
+        
+        withAnimation { self.media = movies.map { MediaViewModel($0, .movie) } }
+    }
+}

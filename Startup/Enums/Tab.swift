@@ -22,7 +22,7 @@ enum Tab: String, CaseIterable, Identifiable {
         case .tv:
             return "tv"
         case .liveTV:
-            return "antenna.radiowaves.left.and.right"
+            return "tv.inset.filled"
         case .favorites:
             return "heart"
         }

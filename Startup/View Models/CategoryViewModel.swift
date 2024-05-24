@@ -76,6 +76,6 @@ extension CategoryViewModel {
             return try Media(from: jsonTV)
         }
         
-        withAnimation { self.media = tvShows.map { MediaViewModel($0, .tv(0,0)) } }
+        withAnimation { self.media = tvShows.map { MediaViewModel($0, .tv(0, 0, 0)) } }
     }
 }

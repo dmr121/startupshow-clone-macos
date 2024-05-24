@@ -27,6 +27,7 @@ struct StartupApp: App {
     @State private var movieCategoriesViewModel = MovieCategoriesViewModel()
     @State private var tvCategoriesViewModel = TVCategoriesViewModel()
     @State private var favoritesViewModel = FavoritesViewModel()
+    @State private var liveTVVM = LiveTVCategoriesViewModel()
     
     var body: some Scene {
         WindowGroup {
@@ -37,6 +38,7 @@ struct StartupApp: App {
                 .environment(movieCategoriesViewModel)
                 .environment(tvCategoriesViewModel)
                 .environment(favoritesViewModel)
+                .environment(liveTVVM)
         }
         .modelContainer(sharedModelContainer)
     }

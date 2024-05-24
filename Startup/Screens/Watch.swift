@@ -46,19 +46,35 @@ struct Watch: View {
         self.media = media
         
         switch media.type {
-        case .tv(let season, let episode):
+        case .tv(let season, let episode, let duration):
             _season = State(initialValue: season)
             _episode = State(initialValue: episode)
+            
+            if let data = media.value.history?.data {
+                let history = data.first { hist in
+                    return hist.episode == episode && hist.season == season
+                }
+                
+                if let seconds = history?.seconds {
+                    // Episode duration is stored in seconds
+                    let durationSeconds = duration * 60
+                    self.initialPosition = Float(seconds) / Float(durationSeconds)
+                } else {
+                    self.initialPosition = .zero
+                }
+            } else {
+                self.initialPosition = .zero
+            }
         default:
             _season = State(initialValue: nil)
             _episode = State(initialValue: nil)
-        }
-        
-        if let seconds = media.value.history?.seconds,
-           let runtime = minutesToSeconds(media.value.meta.runtime) {
-            self.initialPosition = Float(seconds) / Float(runtime)
-        } else {
-            self.initialPosition = .zero
+            
+            if let seconds = media.value.history?.seconds,
+               let runtime = minutesToSeconds(media.value.meta.runtime) {
+                self.initialPosition = Float(seconds) / Float(runtime)
+            } else {
+                self.initialPosition = .zero
+            }
         }
     }
     
@@ -123,6 +139,8 @@ struct Watch: View {
             player.stop()
             hoverControlsTimer?.invalidate()
             NSCursor.unhide()
+            
+            markPosition()
         }
         .task {
             do {
@@ -243,7 +261,8 @@ extension Watch {
                         HStack(spacing: 16) {
                             Spacer()
                             
-                            if let urls = subtitles[0].urls {
+                            // TODO: Fix fatal error here
+                            if let urls = subtitles.first?.urls {
                                 // TODO: Be able to adjust subtitle speed
                                 PlayerButton {
                                     Menu {
@@ -315,6 +334,26 @@ extension Watch {
 
 // MARK: Private methods
 extension Watch {
+    private func markPosition() {
+        Task {
+            do {
+                let seconds = Int(time.intValue) / 1000
+                var message: String?
+                
+                if let season, let episode {
+                    message = try await media.markPosition(seconds, profile: auth.profile, season: season, episode: episode)
+                } else {
+                    message = try await media.markPosition(seconds, profile: auth.profile)
+                }
+                
+                guard let message else { return }
+                print(message)
+            } catch {
+                print("🚨 Error setting position: \(error.localizedDescription)")
+            }
+        }
+    }
+    
     private func togglePause() {
         player.isPlaying ? player.pause(): player.play()
     }

@@ -12,6 +12,10 @@ func minutesToSeconds(_ minutes: String) -> Int? {
     return int != nil ? int! * 60: nil
 }
 
+func minutesToSeconds(_ minutes: Int) -> Int {
+    return minutes * 60
+}
+
 func minutesToHoursAndMinutes(_ minutes: Int) -> String {
     let hours = minutes / 60
     let minutes = minutes % 60

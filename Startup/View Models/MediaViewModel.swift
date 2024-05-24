@@ -11,7 +11,7 @@ import KeychainAccess
 
 enum MediaType: Equatable {
     case movie
-    case tv(Int, Int)
+    case tv(Int, Int, Int)
     
     var slug: String {
         switch self {
@@ -24,7 +24,7 @@ enum MediaType: Equatable {
     
     var season: Int? {
         switch self {
-        case .tv(let season, _):
+        case .tv(let season, _, _):
             return season
         default:
             return nil
@@ -33,8 +33,17 @@ enum MediaType: Equatable {
     
     var episode: Int? {
         switch self {
-        case .tv(_, let episode):
+        case .tv(_, let episode, _):
             return episode
+        default:
+            return nil
+        }
+    }
+    
+    var duration: Int? {
+        switch self {
+        case .tv(_, _, let duration):
+            return duration
         default:
             return nil
         }
@@ -66,6 +75,47 @@ enum MediaType: Equatable {
 
 // MARK: Public methods
 extension MediaViewModel {
+    @MainActor
+    func markPosition(_ position: Int, profile: Profile?, season: Int? = nil, episode: Int? = nil) async throws -> String? {
+        guard let authToken = K.keychain["authToken"] else { throw "Auth token not found" }
+        
+        var url: URL
+        
+        switch type {
+        case .movie:
+            url = URL(string: "\(K.apiURLBase)/history/movie/position/\(id)/\(position)")!
+        case .tv:
+            guard let season, let episode else { throw "Episode and season required" }
+            url = URL(string: "\(K.apiURLBase)/history/tvshow/position/\(id)/\(season)/\(episode)/\(position)/0")!
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "PUT"
+        request.setValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization")
+        if let profile {
+            request.setValue("\(profile.profileNumber)", forHTTPHeaderField: "X-API-PROFILE")
+        }
+        let (responseData, _) = try await URLSession.shared.data(for: request)
+        
+        // Manually set new history
+        switch type {
+        case .movie:
+            self.value.history?.seconds = position
+        case .tv:
+            self.value.history?.data = self.value.history?.data?.map({ history in
+                if episode == history.episode, season == history.season {
+                    var historyCopy = history
+                    historyCopy.seconds = position
+                    return historyCopy
+                }
+                return history
+            })
+        }
+        
+        let json = try JSON(data: responseData)
+        return json["message"].string
+    }
+    
     @MainActor
     func getMediaURL(profile: Profile?, season: Int? = nil, episode: Int? = nil) async throws -> String {
         guard let authToken = K.keychain["authToken"] else { throw "Auth token not found" }
