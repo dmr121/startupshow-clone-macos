@@ -28,7 +28,6 @@ struct Movies: View {
             }
         }
         .task {
-            print("🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨 QUEEF")
             do {
                 try await movieCategoriesViewModel.getCategories(profile: auth.profile)
             } catch {

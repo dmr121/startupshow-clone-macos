@@ -13,12 +13,13 @@ import VLCKit
 struct VLCPlayerRepresentable: NSViewRepresentable {
     let player: VLCMediaPlayer
     let mediaURL: URL
-    @Binding var isPlaying: Bool
-    @Binding var position: Float
-    @Binding var mediaLength: VLCTime
-    @Binding var time: VLCTime
-    @Binding var timeRemaining: VLCTime?
-    @Binding var chapterIndex: Int
+    @Binding private var isPlaying: Bool
+    @Binding private var position: Float
+    @Binding private var mediaLength: VLCTime
+    @Binding private var time: VLCTime
+    @Binding private var timeRemaining: VLCTime?
+    @Binding private var chapterIndex: Int
+//    @Binding private var chapterIndex: Int
     
     init(player: VLCMediaPlayer, url: URL, isPlaying: Binding<Bool>, position: Binding<Float>, mediaLength: Binding<VLCTime>, time: Binding<VLCTime>, timeRemaining: Binding<VLCTime?>, chapterIndex: Binding<Int>) {
         self.player = player
@@ -69,6 +70,13 @@ extension VLCPlayerRepresentable {
             default:
                 break
             }
+            
+            print("✅✅✅✅✅")
+            print(player.numberOfSubtitlesTracks)
+            print(player.videoSubTitlesNames)
+            print(player.videoSubTitlesIndexes)
+            print(player.currentVideoSubTitleIndex)
+            print("✅✅✅✅✅")
         }
         
         func mediaPlayerTimeChanged(_ notification: Notification!) {

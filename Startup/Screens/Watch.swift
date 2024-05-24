@@ -140,6 +140,7 @@ struct Watch: View {
             hoverControlsTimer?.invalidate()
             NSCursor.unhide()
             
+            guard isPlaying else { return }
             markPosition()
         }
         .task {
@@ -261,48 +262,12 @@ extension Watch {
                         HStack(spacing: 16) {
                             Spacer()
                             
-                            // TODO: Fix fatal error here
-                            if let urls = subtitles.first?.urls {
-                                // TODO: Be able to adjust subtitle speed
-                                PlayerButton {
-                                    Menu {
-                                        Button {
-                                            player.currentVideoSubTitleIndex = -1
-                                            currentSubtitleIndex = nil
-                                        } label: {
-                                            if currentSubtitleIndex == nil {
-                                                Image(systemName: "checkmark")
-                                                    .resizable()
-                                            }
-                                            
-                                            Text("Turn Off Subtitles")
-                                        }
-                                        Divider()
-                                        
-                                        ForEach(Array(urls.keys), id: \.self) { key in
-                                            if let url = urls[key] {
-                                                let index = urls.values.distance(from: urls.values.startIndex, to: urls.values.firstIndex(of: url)!)
-                                                Button {
-                                                    player.addPlaybackSlave(urls[key], type: .subtitle, enforce: true)
-                                                    currentSubtitleIndex = index
-                                                } label: {
-                                                    if currentSubtitleIndex == index {
-                                                        Image(systemName: "checkmark")
-                                                            .resizable()
-                                                    }
-                                                    
-                                                    Text(key)
-                                                }
-                                                Divider()
-                                            }
-                                        }
-                                    } label: {
-                                        Label("Subtitles", systemImage: "captions.bubble.fill")
-                                            .labelStyle(.iconOnly)
-                                            .font(.largeTitle)
-                                    }
-                                    .scaleEffect(0.85)
-                                }
+                            
+                            // TODO: Be able to adjust subtitle speed
+                            if player.videoSubTitlesNames.count > 0 {
+                                SubtitlesMenu()
+                            } else if let urls = subtitles.first?.urls {
+                                SubtitlesMenu(urls: urls)
                             }
                             
                             PlayerButton {
@@ -330,6 +295,89 @@ extension Watch {
                 .opacity(isHovering ? 0.5: 1)
         }
     }
+    
+    @ViewBuilder private func SubtitlesMenu() -> some View {
+        PlayerButton {
+            Menu {
+                Button {
+                    player.currentVideoSubTitleIndex = -1
+                    currentSubtitleIndex = nil
+                } label: {
+                    if currentSubtitleIndex == nil {
+                        Image(systemName: "checkmark")
+                            .resizable()
+                    }
+                    
+                    Text("Turn Off Subtitles")
+                }
+                Divider()
+                
+                ForEach(Array(player.videoSubTitlesNames.enumerated()), id: \.offset) { index, name in
+                    if let adjustedIndex = player.videoSubTitlesIndexes[index] as? Int,
+                       adjustedIndex != -1 {
+                        Button {
+                            currentSubtitleIndex = adjustedIndex
+                            player.currentVideoSubTitleIndex = Int32(adjustedIndex)
+                        } label: {
+                            if currentSubtitleIndex == adjustedIndex {
+                                Image(systemName: "checkmark")
+                                    .resizable()
+                            }
+                            Text("\(name)")
+                        }
+                        Divider()
+                    }
+                }
+            } label: {
+                Label("Subtitles", systemImage: "captions.bubble.fill")
+                    .labelStyle(.iconOnly)
+                    .font(.largeTitle)
+            }
+            .scaleEffect(0.85)
+        }
+    }
+    
+    @ViewBuilder private func SubtitlesMenu(urls: [String: URL]) -> some View {
+        PlayerButton {
+            Menu {
+                Button {
+                    player.currentVideoSubTitleIndex = -1
+                    currentSubtitleIndex = nil
+                } label: {
+                    if currentSubtitleIndex == nil {
+                        Image(systemName: "checkmark")
+                            .resizable()
+                    }
+                    
+                    Text("Turn Off Subtitles")
+                }
+                Divider()
+                
+                ForEach(Array(urls.keys), id: \.self) { key in
+                    if let url = urls[key] {
+                        let index = urls.values.distance(from: urls.values.startIndex, to: urls.values.firstIndex(of: url)!)
+                        Button {
+                            player.addPlaybackSlave(urls[key], type: .subtitle, enforce: true)
+                            currentSubtitleIndex = index
+                        } label: {
+                            if currentSubtitleIndex == index {
+                                Image(systemName: "checkmark")
+                                    .resizable()
+                            }
+                            
+                            Text(key)
+                        }
+                        Divider()
+                    }
+                }
+            } label: {
+                Label("Subtitles", systemImage: "captions.bubble.fill")
+                    .labelStyle(.iconOnly)
+                    .font(.largeTitle)
+            }
+            .scaleEffect(0.85)
+        }
+    }
 }
 
 // MARK: Private methods
@@ -355,7 +403,7 @@ extension Watch {
     }
     
     private func togglePause() {
-        player.isPlaying ? player.pause(): player.play()
+        isPlaying ? player.pause(): player.play()
     }
     
     private func controlsTimerCountdown(restart: Bool = true) {
@@ -516,3 +564,15 @@ fileprivate struct Volume: View {
         value = max(0, min(1, progress))
     }
 }
+
+//if player.videoSubTitlesNames.count > 0 {
+//    Text("\(player.numberOfSubtitlesTracks)")
+//        .onAppear {
+//            print("✅✅✅✅✅")
+//            print(player.numberOfSubtitlesTracks)
+//            print(player.videoSubTitlesNames)
+//            print(player.videoSubTitlesIndexes)
+//            print(player.currentVideoSubTitleIndex)
+//            print("✅✅✅✅✅")
+//        }
+//}

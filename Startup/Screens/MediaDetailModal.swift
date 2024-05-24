@@ -309,12 +309,35 @@ extension MediaDetailModal {
                             navigation.paths.append(media)
                         } label: {
                             HStack(spacing: 13) {
-                                CachedAsyncImage(url: episode.screenshot, urlCache: .imageCache) { image in
-                                    image.resizable()
-                                        .aspectRatio(contentMode: .fill)
-                                } placeholder: {
-                                    ProgressView()
-                                        .scaleEffect(0.6)
+                                ZStack {
+                                    CachedAsyncImage(url: episode.screenshot, urlCache: .imageCache) { image in
+                                        image.resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                    } placeholder: {
+                                        ProgressView()
+                                            .scaleEffect(0.6)
+                                    }
+                                    
+                                    if let history = media.value.history?.data?.first(where: { epi in
+                                        return epi.season == episode.season && epi.episode == episode.episode
+                                    }) {
+                                        let progress = CGFloat(history.seconds) / CGFloat(episode.duration * 60)
+                                        VStack {
+                                            Spacer()
+                                            
+                                            GeometryReader { geometry in
+                                                Group {
+                                                    Rectangle().fill(.regularMaterial)
+                                                    
+                                                    Color.accentColor
+                                                        .frame(width: geometry.size.width * max(0.05, min(1, progress)))
+                                                }
+                                                .clipShape(Capsule())
+                                            }
+                                            .frame(height: 5.5)
+                                        }
+                                        .padding(5)
+                                    }
                                 }
                                 .frame(width: 200, height: 112.5)
                                 .background(.secondary.opacity(0.2))
@@ -325,11 +348,16 @@ extension MediaDetailModal {
                                         .font(.title3)
                                         .fontWeight(.bold)
                                     
-                                    if let released = episode.released {
-                                        Text(released.formatted(date: .long, time: .omitted))
-                                            .font(.subheadline)
-                                            .foregroundStyle(.secondary)
+                                    HStack(spacing: 5) {
+                                        Text("\(episode.duration)m")
+                                        
+                                        if let released = episode.released {
+                                            Text("-")
+                                            Text(released.formatted(date: .long, time: .omitted))
+                                        }
                                     }
+                                    .font(.subheadline)
+                                    .foregroundStyle(.secondary)
                                     
                                     Text(episode.plot)
                                         .lineSpacing(4)
