@@ -46,7 +46,7 @@ extension MovieCategoriesViewModel {
         // Get all movies from all categories
         try await withThrowingTaskGroup(of: Void.self) { group in
             self.categories.forEach { category in
-                if category.id == "1" {
+                if category.id == "7" {
                     group.addTask {
                         try await category.getMovies(profile: profile)
                     }

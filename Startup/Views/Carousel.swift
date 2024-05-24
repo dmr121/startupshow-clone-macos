@@ -83,9 +83,11 @@ struct Carousel<Content, Item: Hashable>: View where Content: View {
                 .offset(x: hoveringLeft ? buttonWidth: 0, y: 0)
             }
             
-            GeometryReader { geometry in
-                BackwardButton(geometry: geometry)
-                ForwardButton(geometry: geometry)
+            if items.count > columns {
+                GeometryReader { geometry in
+                    BackwardButton(geometry: geometry)
+                    ForwardButton(geometry: geometry)
+                }
             }
         }
         .onChange(of: group) { _, _ in

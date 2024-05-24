@@ -83,7 +83,7 @@ extension MediaViewModel {
         var request = URLRequest(url: url)
         request.setValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization")
         if let profile {
-            request.setValue("X-API-PROFILE", forHTTPHeaderField: "\(profile.profileNumber)")
+            request.setValue("\(profile.profileNumber)", forHTTPHeaderField: "X-API-PROFILE")
         }
         let (responseData, _) = try await URLSession.shared.data(for: request)
         
@@ -92,6 +92,36 @@ extension MediaViewModel {
         
         if let secureLink { return secureLink }
         throw "Couldn't get secure link"
+    }
+    
+    @MainActor
+    func getSubtitles(profile: Profile?, season: Int? = nil, episode: Int? = nil) async throws -> [Subtitles] {
+        guard let authToken = K.keychain["authToken"] else { throw "Auth token not found" }
+        
+        var url: URL
+        
+        switch type {
+        case .movie:
+            url = URL(string: "\(K.apiURLBase)/subtitles/movie/\(id)")!
+        case .tv:
+            guard let season, let episode else { throw "Episode and season required" }
+            url = URL(string: "\(K.apiURLBase)/subtitles/tvshow/\(id)/\(season)/\(episode)")!
+        }
+        
+        var request = URLRequest(url: url)
+        request.setValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization")
+        if let profile {
+            request.setValue("\(profile.profileNumber)", forHTTPHeaderField: "X-API-PROFILE")
+        }
+        let (responseData, _) = try await URLSession.shared.data(for: request)
+        
+        let json = try JSON(data: responseData)
+        
+        let subtitles = try json["data"].arrayValue.compactMap { jsonS in
+            return try Subtitles(from: jsonS)
+        }
+        
+        return subtitles
     }
     
     @MainActor
@@ -109,7 +139,7 @@ extension MediaViewModel {
         request.httpMethod = "POST"
         request.setValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization")
         if let profile {
-            request.setValue("X-API-PROFILE", forHTTPHeaderField: "\(profile.profileNumber)")
+            request.setValue("\(profile.profileNumber)", forHTTPHeaderField: "X-API-PROFILE")
         }
         
         let (responseData, _) = try await URLSession.shared.data(for: request)
@@ -135,7 +165,7 @@ extension MediaViewModel {
         request.httpMethod = "DELETE"
         request.setValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization")
         if let profile {
-            request.setValue("X-API-PROFILE", forHTTPHeaderField: "\(profile.profileNumber)")
+            request.setValue("\(profile.profileNumber)", forHTTPHeaderField: "X-API-PROFILE")
         }
         
         let (responseData, _) = try await URLSession.shared.data(for: request)

@@ -23,12 +23,33 @@ struct MediaCard: View {
                 Button {
                     withAnimation { selectedMedia = media }
                 } label: {
-                    CachedAsyncImage(url: media.value.meta.poster, urlCache: .imageCache) { image in
-                        image.resizable()
-                            .aspectRatio(contentMode: .fill)
-                    } placeholder: {
-                        ProgressView()
-                            .scaleEffect(0.6)
+                    ZStack {
+                        CachedAsyncImage(url: media.value.meta.poster, urlCache: .imageCache) { image in
+                            image.resizable()
+                                .aspectRatio(contentMode: .fill)
+                        } placeholder: {
+                            ProgressView()
+                                .scaleEffect(0.6)
+                        }
+                        
+                        if let seconds = media.value.history?.seconds,
+                           let runtime = minutesToSeconds(media.value.meta.runtime) {
+                            VStack {
+                                Spacer()
+                                
+                                GeometryReader { geo in
+                                    Group {
+                                        Rectangle().fill(.regularMaterial)
+                                        
+                                        Color.accentColor
+                                            .frame(width: geo.size.width * max(0.05, min(1, CGFloat(seconds) / CGFloat(runtime))))
+                                    }
+                                    .clipShape(Capsule())
+                                }
+                                .frame(height: geometry.size.height * 0.03)
+                            }
+                            .padding(geometry.size.width * 0.05)
+                        }
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(.secondary.opacity(0.2))

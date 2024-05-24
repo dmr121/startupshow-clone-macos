@@ -7,6 +7,11 @@
 
 import Foundation
 
+func minutesToSeconds(_ minutes: String) -> Int? {
+    let int = Int(minutes)
+    return int != nil ? int! * 60: nil
+}
+
 func minutesToHoursAndMinutes(_ minutes: Int) -> String {
     let hours = minutes / 60
     let minutes = minutes % 60
@@ -24,7 +29,7 @@ func minutesToHoursAndMinutes(_ minutes: Int) -> String {
 func millisecondsToHoursMinutesAndSeconds(_ milliseconds: CGFloat) -> String {
     let totalSeconds = Int(milliseconds) / 1000
     let hours = totalSeconds / 3600
-    let minutes = totalSeconds / 60
+    let minutes = (totalSeconds / 60) % 60
     let seconds = totalSeconds % 60
     
     if hours > 0 {

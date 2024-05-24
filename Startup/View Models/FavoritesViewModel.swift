@@ -56,7 +56,7 @@ extension FavoritesViewModel {
         var request = URLRequest(url: url)
         request.setValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization")
         if let profile {
-            request.setValue("X-API-PROFILE", forHTTPHeaderField: "\(profile.profileNumber)")
+            request.setValue("\(profile.profileNumber)", forHTTPHeaderField: "X-API-PROFILE")
         }
         
         let (responseData, _) = try await URLSession.shared.data(for: request)
@@ -78,7 +78,7 @@ extension FavoritesViewModel {
         var request = URLRequest(url: url)
         request.setValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization")
         if let profile {
-            request.setValue("X-API-PROFILE", forHTTPHeaderField: "\(profile.profileNumber)")
+            request.setValue("\(profile.profileNumber)", forHTTPHeaderField: "X-API-PROFILE")
         }
         
         let (responseData, _) = try await URLSession.shared.data(for: request)

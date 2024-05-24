@@ -20,6 +20,8 @@ struct Watch: View {
     @State private var season: Int?
     @State private var episode: Int?
     
+    let initialPosition: Float
+    
     // Player state variables
     @State private var secureLink: String?
     @State private var player = VLCMediaPlayer()
@@ -27,8 +29,11 @@ struct Watch: View {
     @State private var mediaLength = VLCTime()
     @State private var time = VLCTime()
     @State private var timeRemaining: VLCTime?
-    @State private var position: Float = 0.0
+    @State private var position: Float = .zero
+    @State private var volume: Float = 1
     @State private var chapterIndex: Int = 0
+    @State private var subtitles = [Subtitles]()
+    @State private var currentSubtitleIndex: Int?
     
     // Addition state variables
     @State private var fullScreen = true
@@ -47,6 +52,13 @@ struct Watch: View {
         default:
             _season = State(initialValue: nil)
             _episode = State(initialValue: nil)
+        }
+        
+        if let seconds = media.value.history?.seconds,
+           let runtime = minutesToSeconds(media.value.meta.runtime) {
+            self.initialPosition = Float(seconds) / Float(runtime)
+        } else {
+            self.initialPosition = .zero
         }
     }
     
@@ -67,10 +79,12 @@ struct Watch: View {
                     .onAppear {
                         player.play()
                         isFocused = true
+                        player.position = initialPosition
                     }
                     
-                        Controls(geometry: geometry)
+                    Controls(geometry: geometry)
                         .opacity(showControls || !isPlaying ? 1: 0)
+                    
                 } else {
                     ProgressView()
                 }
@@ -78,15 +92,11 @@ struct Watch: View {
             .frame(width: geometry.size.width, height: geometry.size.height)
             .overlay {
                 GeometryReader { _ in }
-                    .trackingMouse { location in
-                        withAnimation { showControls = true }
-                        NSCursor.unhide()
+                    .trackingMouse { _ in
                         controlsTimerCountdown()
-                    } onEntered: { location in
-                        withAnimation { showControls = true }
-                        NSCursor.unhide()
+                    } onEntered: { _ in
                         controlsTimerCountdown()
-                    } onExited: { location in
+                    } onExited: { _ in
                         withAnimation { showControls = false }
                     }
             }
@@ -98,7 +108,7 @@ struct Watch: View {
         .focused($isFocused)
         .focusEffectDisabled()
         .onKeyPress(.space) {
-            player.isPlaying ? player.pause(): player.play()
+            togglePause()
             return .handled
         }
         .onKeyPress(.rightArrow) {
@@ -111,12 +121,16 @@ struct Watch: View {
         }
         .onDisappear {
             player.stop()
+            hoverControlsTimer?.invalidate()
+            NSCursor.unhide()
         }
         .task {
             do {
                 if let season, let episode {
+                    subtitles = try await media.getSubtitles(profile: auth.profile, season: season, episode: episode)
                     secureLink = try await media.getMediaURL(profile: auth.profile, season: season, episode: episode)
                 } else {
+                    subtitles = try await media.getSubtitles(profile: auth.profile)
                     secureLink = try await media.getMediaURL(profile: auth.profile)
                 }
             } catch {
@@ -129,104 +143,164 @@ struct Watch: View {
 // MARK: Views
 extension Watch {
     @ViewBuilder private func Controls(geometry: GeometryProxy) -> some View {
-        VStack {
-            // Back button
-            HStack {
-                PlayerButton {
-                    Button {
-                        dismiss()
-                    } label: {
-                        Label("Go back", systemImage: "arrow.backward")
-                            .labelStyle(.iconOnly)
-                            .font(.largeTitle)
+        ZStack {
+            Rectangle().fill(.clear)
+                .frame(height: geometry.size.height)
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    togglePause()
+                }
+            
+            VStack {
+                // Back button
+                HStack {
+                    PlayerButton {
+                        Button {
+                            dismiss()
+                        } label: {
+                            Label("Go back", systemImage: "arrow.backward")
+                                .labelStyle(.iconOnly)
+                                .font(.largeTitle)
+                        }
                     }
+                    
+                    Spacer()
                 }
                 
                 Spacer()
-            }
-            
-            Spacer()
-            
-            // Bottom controls
-            VStack {
-                // Scrubber
-                VStack(spacing: 0) {
-                    HStack(spacing: 16) {
-                        Text(time.stringValue)
-                        
-                        Spacer()
-                        
-                        if let timeRemaining {
-                            Text(timeRemaining.stringValue)
-                        }
-                    }
-                    .padding(.bottom, -10)
-                    .allowsHitTesting(false)
-                    
-                    Scrubber(value: $position, mediaLength: $mediaLength, player: player)
-                        .frame(height: 40)
-                }
                 
-                // Player controls
-                HStack {
-                    HStack(spacing: 16) {
-                        PlayerButton {
-                            Button {
-                                player.isPlaying ? player.pause(): player.play()
-                            } label: {
-                                Label(isPlaying ? "Pause": "Play", systemImage: isPlaying ? "pause.fill": "play.fill")
-                                    .labelStyle(.iconOnly)
-                                    .font(.largeTitle)
+                // Bottom controls
+                VStack {
+                    // Scrubber
+                    VStack(spacing: 0) {
+                        HStack(spacing: 16) {
+                            Text(time.stringValue)
+                            
+                            Spacer()
+                            
+                            if let timeRemaining {
+                                Text(timeRemaining.stringValue)
                             }
                         }
+                        .padding(.bottom, -10)
+                        .allowsHitTesting(false)
                         
-                        PlayerButton {
-                            Button {
-                                player.jumpBackward(10)
-                            } label: {
-                                Label("Jump Forward", systemImage: "gobackward.10")
-                                    .labelStyle(.iconOnly)
-                                    .font(.largeTitle)
-                            }
-                        }
-                        
-                        PlayerButton {
-                            Button {
-                                player.jumpForward(10)
-                            } label: {
-                                Label("Jump Forward", systemImage: "goforward.10")
-                                    .labelStyle(.iconOnly)
-                                    .font(.largeTitle)
-                            }
-                        }
-                        
-                        Spacer()
+                        Scrubber(value: $position, mediaLength: $mediaLength, player: player)
+                            .frame(height: 40)
                     }
-                    .frame(maxWidth: .infinity)
                     
-                    
-                    Text(media.value.title)
-                        .multilineTextAlignment(.center)
-                        .font(.headline)
+                    // Player controls
+                    HStack {
+                        HStack(spacing: 16) {
+                            PlayerButton {
+                                Button {
+                                    controlsTimerCountdown()
+                                    togglePause()
+                                } label: {
+                                    Label(isPlaying ? "Pause": "Play", systemImage: isPlaying ? "pause.fill": "play.fill")
+                                        .labelStyle(.iconOnly)
+                                        .font(.largeTitle)
+                                }
+                            }
+                            
+                            PlayerButton {
+                                Button {
+                                    controlsTimerCountdown()
+                                    player.jumpBackward(10)
+                                } label: {
+                                    Label("Jump Forward", systemImage: "gobackward.10")
+                                        .labelStyle(.iconOnly)
+                                        .font(.largeTitle)
+                                }
+                            }
+                            
+                            PlayerButton {
+                                Button {
+                                    controlsTimerCountdown()
+                                    player.jumpForward(10)
+                                } label: {
+                                    Label("Jump Forward", systemImage: "goforward.10")
+                                        .labelStyle(.iconOnly)
+                                        .font(.largeTitle)
+                                }
+                            }
+                            
+                            Volume(value: $volume, player: player, controlsTimerCountdown: controlsTimerCountdown)
+                                .frame(maxWidth: 100)
+                                .frame(height: 28)
+                            
+                            Spacer()
+                        }
                         .frame(maxWidth: .infinity)
-                    
-                    HStack(spacing: 16) {
-                        Spacer()
                         
-                        PlayerButton {
-                            Button(action: toggleFullScreen) {
-                                Label("Fullscreen", systemImage: fullScreen ? "rectangle.center.inset.filled":  "rectangle.inset.filled")
-                                    .labelStyle(.iconOnly)
-                                    .font(.largeTitle)
+                        
+                        Text(media.value.title)
+                            .multilineTextAlignment(.center)
+                            .lineLimit(2)
+                            .font(.headline)
+                            .frame(maxWidth: .infinity)
+                        
+                        HStack(spacing: 16) {
+                            Spacer()
+                            
+                            if let urls = subtitles[0].urls {
+                                // TODO: Be able to adjust subtitle speed
+                                PlayerButton {
+                                    Menu {
+                                        Button {
+                                            player.currentVideoSubTitleIndex = -1
+                                            currentSubtitleIndex = nil
+                                        } label: {
+                                            if currentSubtitleIndex == nil {
+                                                Image(systemName: "checkmark")
+                                                    .resizable()
+                                            }
+                                            
+                                            Text("Turn Off Subtitles")
+                                        }
+                                        Divider()
+                                        
+                                        ForEach(Array(urls.keys), id: \.self) { key in
+                                            if let url = urls[key] {
+                                                let index = urls.values.distance(from: urls.values.startIndex, to: urls.values.firstIndex(of: url)!)
+                                                Button {
+                                                    player.addPlaybackSlave(urls[key], type: .subtitle, enforce: true)
+                                                    currentSubtitleIndex = index
+                                                } label: {
+                                                    if currentSubtitleIndex == index {
+                                                        Image(systemName: "checkmark")
+                                                            .resizable()
+                                                    }
+                                                    
+                                                    Text(key)
+                                                }
+                                                Divider()
+                                            }
+                                        }
+                                    } label: {
+                                        Label("Subtitles", systemImage: "captions.bubble.fill")
+                                            .labelStyle(.iconOnly)
+                                            .font(.largeTitle)
+                                    }
+                                    .scaleEffect(0.85)
+                                }
+                            }
+                            
+                            PlayerButton {
+                                Button(action: toggleFullScreen) {
+                                    Label("Fullscreen", systemImage: fullScreen ? "rectangle.center.inset.filled":  "rectangle.inset.filled")
+                                        .labelStyle(.iconOnly)
+                                        .font(.largeTitle)
+                                }
                             }
                         }
+                        .frame(maxWidth: .infinity)
                     }
-                    .frame(maxWidth: .infinity)
                 }
             }
+            .padding(16)
         }
         .foregroundStyle(.white)
-        .padding(16)
     }
     
     @ViewBuilder private func PlayerButton<Content: View>(_ content: @escaping () -> Content) -> some View {
@@ -241,8 +315,17 @@ extension Watch {
 
 // MARK: Private methods
 extension Watch {
-    private func controlsTimerCountdown() {
+    private func togglePause() {
+        player.isPlaying ? player.pause(): player.play()
+    }
+    
+    private func controlsTimerCountdown(restart: Bool = true) {
+        withAnimation { showControls = true }
+        NSCursor.unhide()
         hoverControlsTimer?.invalidate()
+        
+        guard restart else { return }
+        
         hoverControlsTimer = Timer.scheduledTimer(withTimeInterval: 2.5, repeats: false) { timer in
             DispatchQueue.main.async {
                 withAnimation { self.showControls = false }
@@ -332,5 +415,65 @@ fileprivate struct Scrubber: View {
                 )
                 .zIndex(2)
         }
+    }
+}
+
+fileprivate struct Volume: View {
+    @Binding var value: Float
+    let player: VLCMediaPlayer
+    let controlsTimerCountdown: (_: Bool) -> ()
+    
+    @State private var isDragging = false
+    
+    let lineHeight: CGFloat = 4
+    let indicatorWidth: CGFloat = 11
+    
+    var body: some View {
+        GeometryReader { geometry in
+            Group {
+                Group {
+                    Color("ScrubberBG")
+                    Color.white
+                        .frame(width: geometry.size.width * CGFloat(value))
+                }
+                .clipShape(RoundedRectangle(cornerRadius: 2))
+                .zIndex(0)
+            }
+            .frame(height: lineHeight)
+            .offset(y: geometry.size.height / 2 - lineHeight / 2)
+            .zIndex(0)
+            
+            Group {
+                Circle().fill(.white)
+                    .frame(width: indicatorWidth, height: 20)
+            }
+            .offset(y: geometry.size.height / 2 - 10)
+            .offset(x: geometry.size.width * CGFloat(value) - indicatorWidth / 2)
+            .zIndex(1)
+            
+            Rectangle().fill(.clear).frame(height: geometry.size.height)
+                .contentShape(Rectangle())
+                .simultaneousGesture(
+                    DragGesture(minimumDistance: 0)
+                        .onChanged { drag in
+                            onDragChanged(drag.location.x, geometry: geometry)
+                            controlsTimerCountdown(true)
+                        }
+                )
+                .simultaneousGesture(
+                    SpatialTapGesture()
+                        .onEnded { tap in
+                            onDragChanged(tap.location.x, geometry: geometry)
+                            controlsTimerCountdown(true)
+                        }
+                )
+                .zIndex(2)
+        }
+    }
+    
+    func onDragChanged(_ location: Double, geometry: GeometryProxy) {
+        let progress = Float(location / geometry.size.width)
+        player.audio.volume = Int32(progress * 100)
+        value = max(0, min(1, progress))
     }
 }

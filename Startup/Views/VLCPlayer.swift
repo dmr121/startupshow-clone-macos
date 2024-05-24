@@ -36,6 +36,7 @@ struct VLCPlayerRepresentable: NSViewRepresentable {
         
         player.drawable = view
         player.media = VLCMedia(url: mediaURL)
+        player.position = position
         player.delegate = context.coordinator
         
         return view
@@ -60,7 +61,6 @@ extension VLCPlayerRepresentable {
         
         func mediaPlayerStateChanged(_ notification: Notification) {
             guard let player = notification.object as? VLCMediaPlayer else { return }
-            
             switch player.state {
             case .playing:
                 representable.isPlaying = true

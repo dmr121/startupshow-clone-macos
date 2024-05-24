@@ -36,11 +36,11 @@
 		1E1787B22BFA9B7E00BDB45E /* MediaViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1787B12BFA9B7E00BDB45E /* MediaViewModel.swift */; };
 		1E1787B42BFA9FA200BDB45E /* MediaCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1787B32BFA9FA200BDB45E /* MediaCard.swift */; };
 		1E1787B62BFBB6B400BDB45E /* FavoritesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1787B52BFBB6B400BDB45E /* FavoritesViewModel.swift */; };
-		1E1787C42BFBE50600BDB45E /* WatchTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1787C32BFBE50600BDB45E /* WatchTest.swift */; };
 		1E1787C62BFC011900BDB45E /* FullScreenMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1787C52BFC011900BDB45E /* FullScreenMonitor.swift */; };
 		1E1787C82BFC081400BDB45E /* TrackingMouseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1787C72BFC081400BDB45E /* TrackingMouseView.swift */; };
 		1E1787CC2BFD32B400BDB45E /* Dimensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1787CB2BFD32B400BDB45E /* Dimensions.swift */; };
 		1E1787CE2BFD46D200BDB45E /* PlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1787CD2BFD46D200BDB45E /* PlayerViewModel.swift */; };
+		1E1787D02BFD55C500BDB45E /* Subtitles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1787CF2BFD55C500BDB45E /* Subtitles.swift */; };
 		1E1E32772BF7EC3A00519351 /* minutesToHoursAndMinutes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1E32762BF7EC3A00519351 /* minutesToHoursAndMinutes.swift */; };
 		1E1E32792BF7F6C900519351 /* VLC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1E32782BF7F6C900519351 /* VLC.swift */; };
 		1E1E327D2BF83E6F00519351 /* Watch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1E327C2BF83E6F00519351 /* Watch.swift */; };
@@ -108,11 +108,11 @@
 		1E1787B12BFA9B7E00BDB45E /* MediaViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaViewModel.swift; sourceTree = "<group>"; };
 		1E1787B32BFA9FA200BDB45E /* MediaCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaCard.swift; sourceTree = "<group>"; };
 		1E1787B52BFBB6B400BDB45E /* FavoritesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesViewModel.swift; sourceTree = "<group>"; };
-		1E1787C32BFBE50600BDB45E /* WatchTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchTest.swift; sourceTree = "<group>"; };
 		1E1787C52BFC011900BDB45E /* FullScreenMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullScreenMonitor.swift; sourceTree = "<group>"; };
 		1E1787C72BFC081400BDB45E /* TrackingMouseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingMouseView.swift; sourceTree = "<group>"; };
 		1E1787CB2BFD32B400BDB45E /* Dimensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dimensions.swift; sourceTree = "<group>"; };
 		1E1787CD2BFD46D200BDB45E /* PlayerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewModel.swift; sourceTree = "<group>"; };
+		1E1787CF2BFD55C500BDB45E /* Subtitles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subtitles.swift; sourceTree = "<group>"; };
 		1E1E32762BF7EC3A00519351 /* minutesToHoursAndMinutes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = minutesToHoursAndMinutes.swift; sourceTree = "<group>"; };
 		1E1E32782BF7F6C900519351 /* VLC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VLC.swift; sourceTree = "<group>"; };
 		1E1E327C2BF83E6F00519351 /* Watch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Watch.swift; sourceTree = "<group>"; };
@@ -262,6 +262,7 @@
 				1EB9E6AA2BF5679E0064EB6F /* Profile.swift */,
 				1EB9E6A92BF5679E0064EB6F /* User.swift */,
 				1EB9E6832BF43D180064EB6F /* Item.swift */,
+				1E1787CF2BFD55C500BDB45E /* Subtitles.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -279,7 +280,6 @@
 				1E1E327C2BF83E6F00519351 /* Watch.swift */,
 				1EB9E6992BF55EE50064EB6F /* LiveTV.swift */,
 				1EB9E69B2BF55EF00064EB6F /* Favorites.swift */,
-				1E1787C32BFBE50600BDB45E /* WatchTest.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -494,9 +494,9 @@
 				1EB9E6952BF55EC00064EB6F /* Movies.swift in Sources */,
 				1E1787A32BF8637100BDB45E /* VLCMediaPlayerState+Extension.swift in Sources */,
 				1E1787C62BFC011900BDB45E /* FullScreenMonitor.swift in Sources */,
-				1E1787C42BFBE50600BDB45E /* WatchTest.swift in Sources */,
 				1E1787A72BFA76E800BDB45E /* Int+Extension.swift in Sources */,
 				1EB9E69A2BF55EE50064EB6F /* LiveTV.swift in Sources */,
+				1E1787D02BFD55C500BDB45E /* Subtitles.swift in Sources */,
 				1EB9E6CC2BF5914C0064EB6F /* MockData.swift in Sources */,
 				1EB9E6822BF43D180064EB6F /* ContentView.swift in Sources */,
 				1E1787B22BFA9B7E00BDB45E /* MediaViewModel.swift in Sources */,
