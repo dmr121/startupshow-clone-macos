@@ -23,7 +23,6 @@ extension FavoritesViewModel {
     func getFavorites(profile: Profile?) async throws {
         // Make sure 10 minutes have passed
         if let lastFetched, Date().timeIntervalSince(lastFetched) < 10 * 60 { return }
-        lastFetched = Date()
         
         withAnimation { fetchingFavorites = true }
         defer {
@@ -42,6 +41,8 @@ extension FavoritesViewModel {
                 print("Got favorites")
             }
         }
+        
+        lastFetched = Date()
     }
 }
 

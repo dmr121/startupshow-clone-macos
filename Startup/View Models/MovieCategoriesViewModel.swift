@@ -21,7 +21,6 @@ extension MovieCategoriesViewModel {
     func getCategories(profile: Profile?) async throws {
         // Make sure 10 minutes have passed
         if let lastFetched, Date().timeIntervalSince(lastFetched) < 10 * 60 { return }
-        lastFetched = Date()
         
         withAnimation { fetchingCategories = true }
         defer {
@@ -57,5 +56,7 @@ extension MovieCategoriesViewModel {
                 print("Got category movies")
             }
         }
+        
+        lastFetched = Date()
     }
 }

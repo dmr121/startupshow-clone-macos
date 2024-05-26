@@ -21,7 +21,7 @@ struct Login: View {
     var body: some View {
         VStack {
             TextField(text: $url, prompt: Text("Enter an m3u url")) {
-                Text("Eurrg")
+                Text("URL Input Field")
             }
             .focused($focus, equals: FocusField.url)
             .textFieldStyle(.plain)

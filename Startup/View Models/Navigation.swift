@@ -9,4 +9,5 @@ import SwiftUI
 
 @Observable class Navigation {
     var paths = NavigationPath()
+    var showSearchModel = false
 }

@@ -10,6 +10,7 @@ enum Tab: String, CaseIterable, Identifiable {
     case tv = "TV"
     case favorites = "Favorites"
     case liveTV = "Live TV"
+    case search = "Search"
     
     var id: Self {
         return self
@@ -25,6 +26,8 @@ enum Tab: String, CaseIterable, Identifiable {
             return "tv.inset.filled"
         case .favorites:
             return "heart"
+        case .search:
+            return "magnifyingglass"
         }
     }
 }

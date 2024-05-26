@@ -48,6 +48,10 @@ struct LiveTV: View {
         .task {
             do {
                 try await liveTVVM.getCategories(profile: auth.profile)
+                
+                if liveTVVM.selectedCategory == nil {
+                    liveTVVM.selectedCategory = liveTVVM.categories.first
+                }
             } catch {
                 print("🚨 Error fetching categories: \(error.localizedDescription)")
             }

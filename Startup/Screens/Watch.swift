@@ -156,6 +156,13 @@ struct Watch: View {
                 print("🚨 Error getting secure link: \(error.localizedDescription)")
             }
         }
+        .task {
+            do {
+                try await media.getMedia(profile: auth.profile)
+            } catch {
+                print("🚨 Error getting media info: \(error.localizedDescription)")
+            }
+        }
     }
 }
 

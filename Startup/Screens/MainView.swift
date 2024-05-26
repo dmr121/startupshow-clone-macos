@@ -10,27 +10,29 @@ import SwiftUI
 struct MainView: View {
     @Environment(Authentication.self) private var auth
     
-    @State private var tab: Tab? = .liveTV
-    @State private var searchQuery: String = ""
+    @State private var tab: Tab? = .movies
+    @State private var navVisibility = NavigationSplitViewVisibility.doubleColumn
     @State private var showLogoutAlert = false
     
     @State private var navigation = Navigation()
     
     var body: some View {
         NavigationStack(path: $navigation.paths) {
-            NavigationSplitView {
+            NavigationSplitView(columnVisibility: $navVisibility) {
                 Sidebar()
-                    .navigationSplitViewColumnWidth(min: 120, ideal: 180, max: 250)
-                    .searchable(text: $searchQuery, placement: .sidebar)
+                    .navigationSplitViewColumnWidth(min: 180, ideal: 240, max: 240)
             } detail: {
                 Text("Select a tab.")
             }
-            .task {
-                // Get user
-                // get profile data
-            }
+            .navigationSplitViewStyle(.prominentDetail)
             .navigationDestination(for: MediaViewModel.self) { media in
                 Watch(media)
+            }
+            .sheet(isPresented: $navigation.showSearchModel) {
+                SearchModal(auth: auth)
+                    .frame(minWidth: 750, minHeight: 533)
+                    .frame(idealWidth: 750, idealHeight: 533)
+                    .frame(maxWidth: 1000, maxHeight: 710)
             }
         }
         .environment(navigation)
@@ -57,6 +59,8 @@ extension MainView {
                         case .favorites:
                             Favorites()
                                 .navigationTitle("Favorites")
+                        default:
+                            EmptyView()
                         }
                     } label: {
                         Label(tab.rawValue, systemImage: tab.icon)
@@ -73,10 +77,18 @@ extension MainView {
         }
         .listStyle(.sidebar)
         .toolbar {
-            Button {
-                showLogoutAlert = true
-            } label: {
-                Label("Logout", systemImage: "rectangle.portrait.and.arrow.forward")
+            ToolbarItemGroup(placement: .primaryAction) {
+                Button {
+                    navigation.showSearchModel = true
+                } label: {
+                    Label(Tab.search.rawValue, systemImage: Tab.search.icon)
+                }
+                
+                Button {
+                    showLogoutAlert = true
+                } label: {
+                    Label("Logout", systemImage: "rectangle.portrait.and.arrow.forward")
+                }
             }
         }
         .alert("Logout", isPresented: $showLogoutAlert, actions: {

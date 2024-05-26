@@ -39,14 +39,14 @@
 		1E1787C62BFC011900BDB45E /* FullScreenMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1787C52BFC011900BDB45E /* FullScreenMonitor.swift */; };
 		1E1787C82BFC081400BDB45E /* TrackingMouseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1787C72BFC081400BDB45E /* TrackingMouseView.swift */; };
 		1E1787CC2BFD32B400BDB45E /* Dimensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1787CB2BFD32B400BDB45E /* Dimensions.swift */; };
-		1E1787CE2BFD46D200BDB45E /* PlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1787CD2BFD46D200BDB45E /* PlayerViewModel.swift */; };
 		1E1787D02BFD55C500BDB45E /* Subtitles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1787CF2BFD55C500BDB45E /* Subtitles.swift */; };
 		1E1787D22C004DDF00BDB45E /* LiveTVCategoriesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1787D12C004DDF00BDB45E /* LiveTVCategoriesViewModel.swift */; };
 		1E1787D42C004F2800BDB45E /* LiveTVCategoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1787D32C004F2800BDB45E /* LiveTVCategoryViewModel.swift */; };
 		1E1E32772BF7EC3A00519351 /* minutesToHoursAndMinutes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1E32762BF7EC3A00519351 /* minutesToHoursAndMinutes.swift */; };
 		1E1E32792BF7F6C900519351 /* VLC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1E32782BF7F6C900519351 /* VLC.swift */; };
 		1E1E327D2BF83E6F00519351 /* Watch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E1E327C2BF83E6F00519351 /* Watch.swift */; };
-		1EB8A3C72C013004001E744C /* cleanUpSubtitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB8A3C62C013004001E744C /* cleanUpSubtitle.swift */; };
+		1EB8A3C92C0180AF001E744C /* SearchModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB8A3C82C0180AF001E744C /* SearchModal.swift */; };
+		1EB8A3CB2C018741001E744C /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB8A3CA2C018741001E744C /* SearchViewModel.swift */; };
 		1EB9E6802BF43D180064EB6F /* StartupApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB9E67F2BF43D180064EB6F /* StartupApp.swift */; };
 		1EB9E6822BF43D180064EB6F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB9E6812BF43D180064EB6F /* ContentView.swift */; };
 		1EB9E6842BF43D180064EB6F /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EB9E6832BF43D180064EB6F /* Item.swift */; };
@@ -114,14 +114,14 @@
 		1E1787C52BFC011900BDB45E /* FullScreenMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullScreenMonitor.swift; sourceTree = "<group>"; };
 		1E1787C72BFC081400BDB45E /* TrackingMouseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingMouseView.swift; sourceTree = "<group>"; };
 		1E1787CB2BFD32B400BDB45E /* Dimensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dimensions.swift; sourceTree = "<group>"; };
-		1E1787CD2BFD46D200BDB45E /* PlayerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerViewModel.swift; sourceTree = "<group>"; };
 		1E1787CF2BFD55C500BDB45E /* Subtitles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subtitles.swift; sourceTree = "<group>"; };
 		1E1787D12C004DDF00BDB45E /* LiveTVCategoriesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveTVCategoriesViewModel.swift; sourceTree = "<group>"; };
 		1E1787D32C004F2800BDB45E /* LiveTVCategoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveTVCategoryViewModel.swift; sourceTree = "<group>"; };
 		1E1E32762BF7EC3A00519351 /* minutesToHoursAndMinutes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = minutesToHoursAndMinutes.swift; sourceTree = "<group>"; };
 		1E1E32782BF7F6C900519351 /* VLC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VLC.swift; sourceTree = "<group>"; };
 		1E1E327C2BF83E6F00519351 /* Watch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Watch.swift; sourceTree = "<group>"; };
-		1EB8A3C62C013004001E744C /* cleanUpSubtitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = cleanUpSubtitle.swift; sourceTree = "<group>"; };
+		1EB8A3C82C0180AF001E744C /* SearchModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchModal.swift; sourceTree = "<group>"; };
+		1EB8A3CA2C018741001E744C /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
 		1EB9E67C2BF43D180064EB6F /* Startup.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Startup.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1EB9E67F2BF43D180064EB6F /* StartupApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartupApp.swift; sourceTree = "<group>"; };
 		1EB9E6812BF43D180064EB6F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -286,6 +286,7 @@
 				1E1E327C2BF83E6F00519351 /* Watch.swift */,
 				1EB9E6992BF55EE50064EB6F /* LiveTV.swift */,
 				1EB9E69B2BF55EF00064EB6F /* Favorites.swift */,
+				1EB8A3C82C0180AF001E744C /* SearchModal.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -302,7 +303,7 @@
 				1EC570BB2BF6F5CA008FCD51 /* CategoryViewModel.swift */,
 				1E1787D32C004F2800BDB45E /* LiveTVCategoryViewModel.swift */,
 				1E1787B12BFA9B7E00BDB45E /* MediaViewModel.swift */,
-				1E1787CD2BFD46D200BDB45E /* PlayerViewModel.swift */,
+				1EB8A3CA2C018741001E744C /* SearchViewModel.swift */,
 			);
 			path = "View Models";
 			sourceTree = "<group>";
@@ -343,7 +344,6 @@
 				1E1E32762BF7EC3A00519351 /* minutesToHoursAndMinutes.swift */,
 				1E1E32782BF7F6C900519351 /* VLC.swift */,
 				1E1787A42BF9ACBD00BDB45E /* fullScreen.swift */,
-				1EB8A3C62C013004001E744C /* cleanUpSubtitle.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -516,10 +516,11 @@
 				1EB9E6842BF43D180064EB6F /* Item.swift in Sources */,
 				1E1787A12BF856CA00BDB45E /* Navigation.swift in Sources */,
 				1E1E32792BF7F6C900519351 /* VLC.swift in Sources */,
+				1EB8A3CB2C018741001E744C /* SearchViewModel.swift in Sources */,
 				1EB9E6BA2BF567E70064EB6F /* URL+Extension.swift in Sources */,
 				1EB9E6C82BF58A4D0064EB6F /* Color+Extension.swift in Sources */,
+				1EB8A3C92C0180AF001E744C /* SearchModal.swift in Sources */,
 				1EB9E6C12BF578EF0064EB6F /* MainView.swift in Sources */,
-				1E1787CE2BFD46D200BDB45E /* PlayerViewModel.swift in Sources */,
 				1E1787AC2BFA82BF00BDB45E /* TVCategoriesViewModel.swift in Sources */,
 				1E1787CC2BFD32B400BDB45E /* Dimensions.swift in Sources */,
 				1EB9E6B82BF567E70064EB6F /* Date+Extension.swift in Sources */,
@@ -543,7 +544,6 @@
 				1EC570BC2BF6F5CA008FCD51 /* CategoryViewModel.swift in Sources */,
 				1E1787B42BFA9FA200BDB45E /* MediaCard.swift in Sources */,
 				1EB9E6BD2BF56B870064EB6F /* Welcome.swift in Sources */,
-				1EB8A3C72C013004001E744C /* cleanUpSubtitle.swift in Sources */,
 				1EB9E6B72BF567E70064EB6F /* String+Extension.swift in Sources */,
 				1E1787C82BFC081400BDB45E /* TrackingMouseView.swift in Sources */,
 				1EB9E6AC2BF5679E0064EB6F /* Category.swift in Sources */,

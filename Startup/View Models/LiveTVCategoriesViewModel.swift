@@ -22,7 +22,6 @@ extension LiveTVCategoriesViewModel {
     func getCategories(profile: Profile?) async throws {
         // Make sure 10 hours have passed
         if let lastFetched, Date().timeIntervalSince(lastFetched) < 10 * 60 * 60 { return }
-        lastFetched = Date()
         
         withAnimation { fetchingCategories = true }
         defer {
@@ -43,5 +42,7 @@ extension LiveTVCategoriesViewModel {
         }
         
         withAnimation { self.categories = categories }
+        
+        lastFetched = Date()
     }
 }
