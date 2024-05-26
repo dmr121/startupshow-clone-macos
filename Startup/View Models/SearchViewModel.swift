@@ -53,6 +53,7 @@ class SearchViewModel: ObservableObject {
         typeSubscriber = typePublisher
             .dropFirst(1)
             .sink(receiveValue: { _ in
+                withAnimation { self.media = [] }
                 let trimmed = self.searchQuery.trimmed()
                 self.search(withQuery: trimmed, profile: profile)
             })
@@ -97,7 +98,10 @@ extension SearchViewModel {
     @MainActor
     func searchMovies(withQuery query: String, profile: Profile?) async throws {
         let trimmed = query.trimmed()
-        guard trimmed.count > 0 else { throw "Bad query" }
+        guard trimmed.count > 0 else { 
+            withAnimation { self.media = [] }
+            throw "Bad query"
+        }
         
         withAnimation { fetching = true }
         defer {
@@ -123,7 +127,10 @@ extension SearchViewModel {
     @MainActor
     func searchTVShows(withQuery query: String, profile: Profile?) async throws {
         let trimmed = query.trimmed()
-        guard trimmed.count > 0 else { throw "Bad query" }
+        guard trimmed.count > 0 else { 
+            withAnimation { self.media = [] }
+            throw "Bad query"
+        }
         
         withAnimation { fetching = true }
         defer {

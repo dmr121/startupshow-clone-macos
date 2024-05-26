@@ -31,11 +31,21 @@ struct SearchModal: View {
             LazyVStack(alignment: .leading, spacing: 18, pinnedViews: [.sectionHeaders]) {
                 Section {
                     Section {
-                        LazyVGrid(columns: columns, alignment: .leading, spacing: 8) {
-                            ForEach(searchVM.media) { media in
-                                MediaCard(media, selected: $selectedMedia)
-                                    .aspectRatio(2/3, contentMode: .fill)
+                        if searchVM.media.count > 0 {
+                            LazyVGrid(columns: columns, alignment: .leading, spacing: 8) {
+                                ForEach(searchVM.media) { media in
+                                    MediaCard(media, selected: $selectedMedia)
+                                        .aspectRatio(2/3, contentMode: .fill)
+                                }
                             }
+                        } else {
+                            ZStack {
+                                Image(systemName: "popcorn.fill")
+                                    .font(.system(size: 75))
+                                    .padding(.top, 120)
+                            }
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .foregroundStyle(.secondary.opacity(0.1))
                         }
                     }
                     .padding([.horizontal, .bottom])
@@ -73,7 +83,7 @@ struct SearchModal: View {
                             .clipShape(RoundedRectangle(cornerRadius: 7))
                             .overlay {
                                 RoundedRectangle(cornerRadius: 7)
-                                    .stroke(focus == .search ? .white.opacity(0.3): Color.backgroundLighter)
+                                    .stroke(Color.backgroundLighter)
                             }
                         }
                         
