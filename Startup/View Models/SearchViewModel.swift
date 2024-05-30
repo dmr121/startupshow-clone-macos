@@ -13,6 +13,7 @@ import KeychainAccess
 enum SearchType: String, CaseIterable, Identifiable, Hashable {
     case movies = "Movies"
     case tv = "TV Shows"
+    case liveTV = "Live TV"
     
     var id: Self {
         return self
@@ -70,6 +71,9 @@ extension SearchViewModel {
                     try await self.searchMovies(withQuery: query, profile: profile)
                 case .tv:
                     try await self.searchTVShows(withQuery: query, profile: profile)
+                case .liveTV:
+                    print("DO SOMETHING!")
+//                    try await self.searchTVShows(withQuery: query, profile: profile)
                 }
             } catch {
                 print("🚨 Error searching: \(error.localizedDescription)")
@@ -114,6 +118,9 @@ extension SearchViewModel {
         
         var request = URLRequest(url: url)
         request.setValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization")
+        if let profile {
+            request.setValue("\(profile.profileNumber)", forHTTPHeaderField: "X-API-PROFILE")
+        }
         let (responseData, _) = try await URLSession.shared.data(for: request)
         
         let json = try JSON(data: responseData)
@@ -143,6 +150,9 @@ extension SearchViewModel {
         
         var request = URLRequest(url: url)
         request.setValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization")
+        if let profile {
+            request.setValue("\(profile.profileNumber)", forHTTPHeaderField: "X-API-PROFILE")
+        }
         let (responseData, _) = try await URLSession.shared.data(for: request)
         
         let json = try JSON(data: responseData)

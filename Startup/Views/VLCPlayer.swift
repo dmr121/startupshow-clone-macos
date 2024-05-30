@@ -70,13 +70,6 @@ extension VLCPlayerRepresentable {
             default:
                 break
             }
-            
-            print("✅✅✅✅✅")
-            print(player.numberOfSubtitlesTracks)
-            print(player.videoSubTitlesNames)
-            print(player.videoSubTitlesIndexes)
-            print(player.currentVideoSubTitleIndex)
-            print("✅✅✅✅✅")
         }
         
         func mediaPlayerTimeChanged(_ notification: Notification!) {

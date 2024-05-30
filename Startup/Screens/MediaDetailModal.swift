@@ -67,7 +67,7 @@ struct MediaDetailModal: View {
                             if (media.value.seasons?.count ?? 0) == 0 {
                                 Hover { isHovering in
                                     Button {
-                                        navigation.paths.append(media)
+                                        navigation.mediaPaths.append(media)
                                     } label: {
                                         HStack {
                                             Label("Play", systemImage: "play.fill")
@@ -306,7 +306,7 @@ extension MediaDetailModal {
                     Hover { isHovering in
                         Button {
                             media.type = .tv(episode.season, episode.episode, episode.duration)
-                            navigation.paths.append(media)
+                            navigation.mediaPaths.append(media)
                         } label: {
                             HStack(spacing: 13) {
                                 ZStack {

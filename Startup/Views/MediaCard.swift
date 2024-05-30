@@ -53,10 +53,10 @@ struct MediaCard: View {
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(.secondary.opacity(0.2))
-                    .clipShape(RoundedRectangle(cornerRadius: 4, style: .continuous))
                     .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
+                .clipShape(RoundedRectangle(cornerRadius: 4, style: .continuous))
             }
             .frame(height: geometry.size.width * 1.5)
         }

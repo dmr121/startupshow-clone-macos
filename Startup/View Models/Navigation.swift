@@ -8,6 +8,15 @@
 import SwiftUI
 
 @Observable class Navigation {
-    var paths = NavigationPath()
+    var mediaPaths = NavigationPath()
+    var liveTVPaths = NavigationPath()
     var showSearchModel = false
+    
+    var binding_liveTVPaths: Binding<NavigationPath> {
+        Binding {
+            self.liveTVPaths
+        } set: { newValue in
+            self.liveTVPaths = newValue
+        }
+    }
 }

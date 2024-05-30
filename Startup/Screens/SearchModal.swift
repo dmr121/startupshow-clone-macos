@@ -48,7 +48,7 @@ struct SearchModal: View {
                             .foregroundStyle(.secondary.opacity(0.1))
                         }
                     }
-                    .padding([.horizontal, .bottom])
+                    .padding([.horizontal, .bottom], 8)
                 } header: {
                     VStack(spacing: 16) {
                         HStack(spacing: 14) {

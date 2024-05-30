@@ -10,14 +10,14 @@ import SwiftUI
 struct MainView: View {
     @Environment(Authentication.self) private var auth
     
-    @State private var tab: Tab? = .movies
+    @State private var tab: Tab? = .liveTV
     @State private var navVisibility = NavigationSplitViewVisibility.doubleColumn
     @State private var showLogoutAlert = false
     
     @State private var navigation = Navigation()
     
     var body: some View {
-        NavigationStack(path: $navigation.paths) {
+        NavigationStack(path: $navigation.mediaPaths) {
             NavigationSplitView(columnVisibility: $navVisibility) {
                 Sidebar()
                     .navigationSplitViewColumnWidth(min: 180, ideal: 240, max: 240)
@@ -28,6 +28,9 @@ struct MainView: View {
             .navigationDestination(for: MediaViewModel.self) { media in
                 Watch(media)
             }
+                        .navigationDestination(for: LiveTVChannelViewModel.self) { channel in
+                            WatchLive(channel)
+                        }
             .sheet(isPresented: $navigation.showSearchModel) {
                 SearchModal(auth: auth)
                     .frame(minWidth: 750, minHeight: 533)
@@ -50,15 +53,19 @@ extension MainView {
                         case .movies:
                             Movies()
                                 .navigationTitle("Movies")
+                                .onAppear(perform: showCursor)
                         case .tv:
                             TVShows()
                                 .navigationTitle("TV")
+                                .onAppear(perform: showCursor)
                         case .liveTV:
-                            LiveTV()
+                            LiveTVNetworks()
                                 .navigationTitle("Live TV")
+                                .onAppear(perform: showCursor)
                         case .favorites:
                             Favorites()
                                 .navigationTitle("Favorites")
+                                .onAppear(perform: showCursor)
                         default:
                             EmptyView()
                         }
@@ -105,5 +112,15 @@ extension MainView {
         }, message: {
             Text("Are you sure you want to logout?")
         })
+    }
+}
+
+// MARK: Private methods
+extension MainView {
+    private func showCursor() {
+        NSCursor.unhide()
+        Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { _ in
+            NSCursor.unhide()
+        }
     }
 }

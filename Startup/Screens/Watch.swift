@@ -38,6 +38,7 @@ struct Watch: View {
     // Addition state variables
     @State private var fullScreen = true
     @State private var showControls = false
+    @State private var hasLoadedInitially = false
     @State private var hoverControlsTimer: Timer?
     @FocusState private var isFocused: Bool
     
@@ -135,12 +136,17 @@ struct Watch: View {
             player.jumpBackward(10)
             return .handled
         }
+        .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                hasLoadedInitially = true
+            }
+        }
         .onDisappear {
             player.stop()
             hoverControlsTimer?.invalidate()
             NSCursor.unhide()
             
-            guard isPlaying else { return }
+            guard hasLoadedInitially else { return }
             markPosition()
         }
         .task {
@@ -571,15 +577,3 @@ fileprivate struct Volume: View {
         value = max(0, min(1, progress))
     }
 }
-
-//if player.videoSubTitlesNames.count > 0 {
-//    Text("\(player.numberOfSubtitlesTracks)")
-//        .onAppear {
-//            print("✅✅✅✅✅")
-//            print(player.numberOfSubtitlesTracks)
-//            print(player.videoSubTitlesNames)
-//            print(player.videoSubTitlesIndexes)
-//            print(player.currentVideoSubTitleIndex)
-//            print("✅✅✅✅✅")
-//        }
-//}
