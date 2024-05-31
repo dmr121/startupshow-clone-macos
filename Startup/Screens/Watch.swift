@@ -10,6 +10,11 @@ import CachedAsyncImage
 import Foundation
 import VLCKit
 
+// This actually works
+fileprivate let options: [String] = [
+    "--freetype-fontsize=64",
+]
+
 struct Watch: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(Authentication.self) private var auth
@@ -24,7 +29,7 @@ struct Watch: View {
     
     // Player state variables
     @State private var secureLink: String?
-    @State private var player = VLCMediaPlayer()
+    @State private var player = VLCMediaPlayer(options: options)!
     @State private var isPlaying = false
     @State private var mediaLength = VLCTime()
     @State private var time = VLCTime()
@@ -94,7 +99,6 @@ struct Watch: View {
                         chapterIndex: $chapterIndex
                     )
                     .onAppear {
-                        player.play()
                         isFocused = true
                         player.position = initialPosition
                     }
@@ -429,6 +433,8 @@ extension Watch {
         hoverControlsTimer = Timer.scheduledTimer(withTimeInterval: 2.5, repeats: false) { timer in
             DispatchQueue.main.async {
                 withAnimation { self.showControls = false }
+                
+                if !fullScreen { return }
                 NSCursor.hide()
             }
         }
@@ -518,7 +524,7 @@ fileprivate struct Scrubber: View {
     }
 }
 
-fileprivate struct Volume: View {
+struct Volume: View {
     @Binding var value: Float
     let player: VLCMediaPlayer
     let controlsTimerCountdown: (_: Bool) -> ()

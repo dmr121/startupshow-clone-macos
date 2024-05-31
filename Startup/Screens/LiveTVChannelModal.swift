@@ -66,13 +66,9 @@ struct LiveTVChannelModal: View {
                 ], startPoint: .top, endPoint: .bottom))
             }
             
-            VStack {
-                Spacer()
-                LinearGradient(colors: [Color.background.opacity(0.65), .clear], startPoint: .bottom, endPoint: .top)
-                    .frame(height: 70)
+            if !channel.fetchingEpisodeGuide {
+                Controls()
             }
-            
-            Controls()
             
             // Dismiss button
             VStack {
@@ -104,9 +100,9 @@ struct LiveTVChannelModal: View {
             }
             .padding(12)
         }
+        .disabled(channel.fetchingEpisodeGuide)
         .task {
             do {
-                // Change to getting episodes directly from channel View model
                 self.epgs = try await channel.getEpisodeGuide()
             } catch {
                 print("🚨 Error fetching categories: \(error.localizedDescription)")
@@ -130,6 +126,12 @@ extension LiveTVChannelModal {
             
             HStack(spacing: 15) {
                 Spacer()
+                
+                CachedAsyncImage(url: channel.value.logo) { image in
+                    image.image?.resizable()
+                        .aspectRatio(contentMode: .fit)
+                }
+                .frame(width: 35, height: 35)
                 
                 Hover { isHovering in
                     Button {
@@ -178,10 +180,109 @@ extension LiveTVChannelModal {
                     .buttonStyle(.plain)
                 }
             }
+            .padding()
+            .background(
+                LinearGradient(colors: [Color.background.opacity(0.8), .clear], startPoint: .bottom, endPoint: .top)
+            )
         }
-        .padding()
     }
-    
+    struct Episode: View {
+        let epg: EPG
+        let isToday: Bool
+        
+        @State private var expanded = false
+        @State private var animateAntenna = false
+        
+        init(_ epg: EPG, isToday: Bool) {
+            self.epg = epg
+            self.isToday = isToday
+        }
+        
+        private var playingNow: Bool {
+            return epg.start <= Date() && epg.stop >= Date()
+        }
+        
+        private var description: String? {
+            return (epg.desc?.trimmed().count ?? 0) > 0 ? epg.desc!: nil
+        }
+        
+        var body: some View {
+            Hover { isHovering in
+                Button {
+                    withAnimation { expanded.toggle() }
+                } label: {
+                    HStack(alignment: .top) {
+                        VStack(alignment: .leading) {
+                            Text(epg.title)
+                                .fontWeight(.semibold)
+                            
+                            HStack {
+                                if let start = epg.start.formatted("h:mm a") {
+                                    Text(start)
+                                }
+                                
+                                Text("-")
+                                
+                                if let stop = epg.stop.formatted("h:mm a") {
+                                    Text(stop)
+                                }
+                            }
+                            .fontWeight(.bold)
+                            .foregroundStyle(.secondary)
+                            .font(.subheadline)
+                            .padding(.leading)
+                            
+                            if expanded, let description {
+                                Text(description)
+                                    .font(.subheadline)
+                            }
+                        }
+                        
+                        Spacer()
+                        
+                        HStack {
+                            if playingNow {
+                                Image(systemName: "antenna.radiowaves.left.and.right")
+                                    .symbolEffect(.variableColor.reversing.iterative, options: .repeating, value: animateAntenna)
+                                    .foregroundStyle(Color.accentColor)
+                                    .onAppear {
+                                        withAnimation { animateAntenna.toggle() }
+                                    }
+                            }
+                            
+                            if description != nil {
+                                Label("Toggle expand", systemImage: expanded ? "chevron.up": "chevron.down")
+                                    .labelStyle(.iconOnly)
+                                    .contentTransition(.symbolEffect(.replace))
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        .padding(.top, 10)
+                    }
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 8)
+                    .background(isHovering ? Color.backgroundLightest: .backgroundLighter)
+                    .overlay {
+                        Group {
+                            if isHovering {
+                                RoundedRectangle(cornerRadius: 4)
+                                    .stroke(Color.gray, lineWidth: 2)
+                            }
+                            
+                            if playingNow {
+                                RoundedRectangle(cornerRadius: 4)
+                                    .stroke(Color.accentColor, lineWidth: 2)
+                            }
+                        }
+                    }
+                    .clipShape(RoundedRectangle(cornerRadius: 4))
+                    .opacity((isToday || playingNow) ? 1: 0.4)
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+            }
+        }
+    }
     @ViewBuilder private func Days(geometry: GeometryProxy) -> some View {
         VStack(alignment: .leading, spacing: 32) {
             ForEach(sortedDays, id: \.self) { day in
@@ -203,54 +304,11 @@ extension LiveTVChannelModal {
                     
                     VStack(alignment: .leading, spacing: 2) {
                         ForEach((guideDays[day] ?? []).sorted { $0.start < $1.start }) { epg in
-                            let playingNow = epg.start <= Date() && epg.stop >= Date()
-                            
-                            HStack {
-                                VStack(alignment: .leading) {
-                                    Text(epg.title)
-                                        .fontWeight(.semibold)
-                                    
-                                    HStack {
-                                        if let start = epg.start.formatted("h:mm a") {
-                                            Text(start)
-                                        }
-                                        
-                                        Text("-")
-                                        
-                                        if let stop = epg.stop.formatted("h:mm a") {
-                                            Text(stop)
-                                        }
-                                    }
-                                    .font(.subheadline)
-                                    .fontWeight(.bold)
-                                    .padding(.leading)
-                                    .foregroundStyle(.secondary)
-                                }
-                                
-                                Spacer()
-                                
-                                if playingNow {
-                                    Image(systemName: "antenna.radiowaves.left.and.right")
-                                        .foregroundStyle(Color.accentColor)
-                                }
-                            }
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 8)
-                            .background(Color.backgroundLighter)
-                            .overlay {
-                                Group {
-                                    if playingNow {
-                                        RoundedRectangle(cornerRadius: 4)
-                                            .stroke(Color.accentColor, lineWidth: 2)
-                                    }
-                                }
-                            }
-                            .clipShape(RoundedRectangle(cornerRadius: 4))
-                            .id(epg.id)
+                            Episode(epg, isToday: isToday)
+                                .id(epg.id)
                         }
                     }
                 }
-                .opacity(isToday ? 1: 0.4)
                 
                 if sortedDays.firstIndex(of: day) != sortedDays.count - 1 {
                     Divider()

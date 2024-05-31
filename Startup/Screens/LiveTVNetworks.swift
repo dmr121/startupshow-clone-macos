@@ -76,29 +76,22 @@ struct LiveTVNetworks: View {
 extension LiveTVNetworks {
     @ViewBuilder private func Tile(_ channel: LiveTVChannelViewModel) -> some View {
         GeometryReader { geometry in
-            HoverScale(scale: 1.05) {
+            Hover { isHovering in
                 Button {
                     selectedChannel = channel
                 } label: {
                     ZStack {
-                        Color.backgroundLighter
+                        isHovering ? Color.backgroundLighter: .background
                         
                         VStack {
                             CachedAsyncImage(url: channel.value.logo, urlCache: .imageCache) { image in
                                 image.resizable()
                                     .aspectRatio(contentMode: .fit)
                             } placeholder: {
-                                ZStack {
-                                    Image(systemName: "tv")
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                    
-                                    ProgressView()
-                                        .scaleEffect(0.6)
-                                        .opacity(0.3)
-                                        .padding(.bottom)
-                                }
-                                .foregroundStyle(.gray)
+                                Image(systemName: "tv")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .foregroundStyle(.gray)
                             }
                             .frame(width: geometry.size.width * 0.4444, height: geometry.size.width * 0.4444)
                             
@@ -108,6 +101,33 @@ extension LiveTVNetworks {
                                 .padding(.horizontal)
                         }
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        
+                        VStack {
+                            Spacer()
+                            
+                            HStack {
+                                Spacer()
+                                
+                                if isHovering {
+                                    Hover { buttonHovering in
+                                        Button {
+                                            navigation.mediaPaths.append(channel)
+                                        } label: {
+                                            Label("Watch", systemImage: "play.fill")
+                                                .labelStyle(.iconOnly)
+                                                .font(.system(size: 18))
+                                                .frame(width: 30, height: 30)
+                                                .background(buttonHovering ? .accent: .white)
+                                                .foregroundStyle(buttonHovering ? .white: .black)
+                                                .clipShape(Circle())
+                                        }
+                                        .buttonStyle(.plain)
+                                        .scaleEffect(buttonHovering ? 1.12: 1, anchor: .bottomTrailing)
+                                    }
+                                }
+                            }
+                        }
+                        .padding(10)
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .foregroundStyle(.gray)

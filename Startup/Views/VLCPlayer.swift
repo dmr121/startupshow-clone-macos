@@ -19,7 +19,7 @@ struct VLCPlayerRepresentable: NSViewRepresentable {
     @Binding private var time: VLCTime
     @Binding private var timeRemaining: VLCTime?
     @Binding private var chapterIndex: Int
-//    @Binding private var chapterIndex: Int
+    //    @Binding private var chapterIndex: Int
     
     init(player: VLCMediaPlayer, url: URL, isPlaying: Binding<Bool>, position: Binding<Float>, mediaLength: Binding<VLCTime>, time: Binding<VLCTime>, timeRemaining: Binding<VLCTime?>, chapterIndex: Binding<Int>) {
         self.player = player
@@ -36,9 +36,21 @@ struct VLCPlayerRepresentable: NSViewRepresentable {
         let view = VLCVideoView()
         
         player.drawable = view
-        player.media = VLCMedia(url: mediaURL)
+        
+        let media = VLCMedia(url: mediaURL)
+        media.addOptions([
+            "sub-filter": "marq",  // Example: Using a marquee filter for subtitles
+            "freetype-rel-fontsize": "5",  // Relative font size
+            "freetype-color": "16711680",  // Color in decimal RGB (white in this case)
+            "freetype-background-color": "4278190080"  // Background color in decimal RGBA (semi-transparent black)
+        ])
+        setenv("VLC_FREETYPE_FONT_SIZE", "4", 1)
+        
+        player.media = media
         player.position = position
         player.delegate = context.coordinator
+        
+        player.play()
         
         return view
     }
