@@ -14,6 +14,7 @@ struct Favorites: View {
     @Environment(FavoritesViewModel.self) private var favorites
     
     @State private var selectedMedia: MediaViewModel?
+    @State private var selectedChannel: LiveTVChannelViewModel?
     
     var body: some View {
         GeometryReader { geometry in
@@ -26,6 +27,24 @@ struct Favorites: View {
                     if favorites.tvShows.count > 0 {
                         MediaList(favorites.tvShows, "TV Shows", padding: 8, geometry: geometry)
                     }
+                    
+                    if favorites.liveTV.count > 0 {
+                        Section {
+                            LazyVGrid(columns: channelGridColumns, spacing: 10) {
+                                ForEach(favorites.liveTV) { channel in
+                                    LiveTVChannelTile(channel, selectedChannel: $selectedChannel)
+                                }
+                            }
+                            .padding(10)
+                        } header: {
+                            Text("Live TV Channels")
+                                .font(.title2)
+                                .fontWeight(.bold)
+                                .padding(.horizontal, 11)
+                                .padding(.bottom, -12)
+                                .padding(.leading, 6 * 2)
+                        }
+                    }
                 }
                 .padding(.vertical)
                 .blur(radius: favorites.fetchingFavorites ? 20: 0)
@@ -33,6 +52,11 @@ struct Favorites: View {
             }
             .sheet(item: $selectedMedia) { tvShow in
                 MediaDetailModal(tvShow)
+                    .frame(minWidth: 750, minHeight: 533)
+                    .frame(maxWidth: 1000, maxHeight: 710)
+            }
+            .sheet(item: $selectedChannel) { channel in
+                LiveTVChannelModal(channel)
                     .frame(minWidth: 750, minHeight: 533)
                     .frame(maxWidth: 1000, maxHeight: 710)
             }

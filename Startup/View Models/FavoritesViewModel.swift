@@ -12,7 +12,7 @@ import KeychainAccess
 @Observable class FavoritesViewModel {
     var movies = [MediaViewModel]()
     var tvShows = [MediaViewModel]()
-//    var liveTV
+    var liveTV = [LiveTVChannelViewModel]()
     var fetchingFavorites = true
     var lastFetched: Date?
 }
@@ -36,6 +36,9 @@ extension FavoritesViewModel {
             group.addTask {
                 try await self.getTVShows(profile: profile)
             }
+            group.addTask {
+                try await self.getLiveTV(profile: profile)
+            }
             
             for try await _ in group {
                 print("Got favorites")
@@ -48,6 +51,28 @@ extension FavoritesViewModel {
 
 // MARK: Private methods
 extension FavoritesViewModel {
+    @MainActor
+    func getLiveTV(profile: Profile?) async throws {
+        guard let authToken = K.keychain["authToken"] else { throw "Auth token not found" }
+        
+        let url = URL(string: "\(K.apiURLBase)/favorite/livetv/list/0/50/alphabetic")!
+        
+        var request = URLRequest(url: url)
+        request.setValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization")
+        if let profile {
+            request.setValue("\(profile.profileNumber)", forHTTPHeaderField: "X-API-PROFILE")
+        }
+        
+        let (responseData, _) = try await URLSession.shared.data(for: request)
+        
+        let json = try JSON(data: responseData)
+        let channels = try json["data"].arrayValue.compactMap { jsonC in
+            return try Channel(from: jsonC)
+        }
+        
+        withAnimation { self.liveTV = channels.map { LiveTVChannelViewModel($0) } }
+    }
+    
     @MainActor
     func getMovies(profile: Profile?) async throws {
         guard let authToken = K.keychain["authToken"] else { throw "Auth token not found" }

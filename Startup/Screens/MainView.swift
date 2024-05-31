@@ -59,7 +59,7 @@ extension MainView {
                                 .navigationTitle("TV")
                                 .onAppear(perform: showCursor)
                         case .liveTV:
-                            LiveTVNetworks()
+                            LiveTVChannels()
                                 .navigationTitle("Live TV")
                                 .onAppear(perform: showCursor)
                         case .favorites:

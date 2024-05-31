@@ -69,33 +69,6 @@ extension LiveTVChannelViewModel {
        
         return epg
     }
-//    @MainActor
-//    func getMedia(profile: Profile?) async throws {
-//        guard let authToken = K.keychain["authToken"] else { throw "Auth token not found" }
-//        
-//        var url: URL
-//        
-//        switch type {
-//        case .movie:
-//            url = URL(string: "\(K.apiURLBase)/info/movies/\(id)")!
-//        case .tv:
-//            url = URL(string: "\(K.apiURLBase)/info/tvshows/\(id)")!
-//        }
-//        
-//        var request = URLRequest(url: url)
-//        request.setValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization")
-//        if let profile {
-//            request.setValue("\(profile.profileNumber)", forHTTPHeaderField: "X-API-PROFILE")
-//        }
-//        let (responseData, _) = try await URLSession.shared.data(for: request)
-//        
-//        let json = try JSON(data: responseData)
-//        guard json["data"].count == 1 else { return }
-//        
-//        let media = try Media(from: json["data"][0])
-//        
-//        withAnimation { self.value = media }
-//    }
     
     @MainActor
     func getMediaURL() async throws -> String {

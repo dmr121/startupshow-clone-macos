@@ -17,6 +17,7 @@ struct SearchModal: View {
     
     @StateObject private var searchVM: SearchViewModel
     @State private var selectedMedia: MediaViewModel?
+    @State private var selectedChannel: LiveTVChannelViewModel?
     
     @FocusState private var focus: FocusField?
     
@@ -38,7 +39,13 @@ struct SearchModal: View {
                                         .aspectRatio(2/3, contentMode: .fill)
                                 }
                             }
-                        } else {
+                        } else if searchVM.liveTV.count > 0 {
+                            LazyVGrid(columns: channelGridColumns, spacing: 10) {
+                                ForEach(searchVM.liveTV) { channel in
+                                    LiveTVChannelTile(channel, selectedChannel: $selectedChannel)
+                                }
+                            }
+                        }  else {
                             ZStack {
                                 Image(systemName: "popcorn.fill")
                                     .font(.system(size: 75))
@@ -57,7 +64,7 @@ struct SearchModal: View {
                                     dismiss()
                                 } label: {
                                     ZStack {
-                                        Circle().fill(.black).opacity(isHovering ? 0.65: 0.35)
+                                        Circle().fill(.black).opacity(isHovering ? 0.4: 0.08)
                                         
                                         Image(systemName: "xmark")
                                             .fontWeight(.bold)
@@ -79,11 +86,10 @@ struct SearchModal: View {
                             .textFieldStyle(.plain)
                             .padding(.horizontal, 8)
                             .padding(.vertical, 7)
-                            .background(.black)
                             .clipShape(RoundedRectangle(cornerRadius: 7))
                             .overlay {
                                 RoundedRectangle(cornerRadius: 7)
-                                    .stroke(Color.backgroundLighter)
+                                    .stroke(.white.opacity(0.3))
                             }
                         }
                         
@@ -98,21 +104,27 @@ struct SearchModal: View {
                         .frame(maxWidth: 400)
                     }
                     .padding()
+                    .padding(.bottom, 50)
                     .background(
                         LinearGradient(stops: [
                             .init(color: .clear, location: 0),
-                            .init(color: Color.background, location: 0.32)
-                        ], startPoint: .bottom, endPoint: .top)
+                            .init(color: .backgroundLighter, location: 0.5)
+                        ], startPoint: .bottom, endPoint: .top).allowsHitTesting(false)
                     )
+                    .padding(.bottom, -50)
                     .onAppear {
                         focus = .search
                     }
                 }
             }
         }
-        .background(Color.background)
         .sheet(item: $selectedMedia) { media in
             MediaDetailModal(media)
+                .frame(minWidth: 750, minHeight: 533)
+                .frame(maxWidth: 1000, maxHeight: 710)
+        }
+        .sheet(item: $selectedChannel) { channel in
+            LiveTVChannelModal(channel)
                 .frame(minWidth: 750, minHeight: 533)
                 .frame(maxWidth: 1000, maxHeight: 710)
         }

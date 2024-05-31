@@ -8,6 +8,7 @@
 import SwiftUI
 import AlertToast
 import CachedAsyncImage
+import Lottie
 
 struct LiveTVChannelModal: View {
     @Environment(\.dismiss) private var dismiss
@@ -68,6 +69,11 @@ struct LiveTVChannelModal: View {
             
             if !channel.fetchingEpisodeGuide {
                 Controls()
+            } else {
+                ZStack {
+                    ProgressView()
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
             
             // Dismiss button
@@ -136,7 +142,7 @@ extension LiveTVChannelModal {
                 Hover { isHovering in
                     Button {
                         Task {
-                           await toggleFavorite()
+                            await toggleFavorite()
                         }
                     } label: {
                         // Show solid star if movie is a favorite or if it's currently being marked as a favorite
@@ -374,14 +380,21 @@ extension LiveTVChannelModal {
             if channel.value.is_favorite ?? false {
                 unfavoriteSuccessMessage = try await channel.unfavorite(profile: auth.profile)
                 unfavoriteSuccess = true
-//                TODO: For live tv channels
-//                favorites.movies.removeAll { $0.id == value.id }
+                favorites.liveTV.removeAll { $0.value.id == channel.value.id }
+                
+                guard let index = liveTVVM.categoryChannels.firstIndex(where: { channelVM in
+                    channelVM.value.id == channel.value.id
+                }) else { return }
+                liveTVVM.categoryChannels[index].value.toggleFavorite(to: false)
             } else {
                 favoriteSuccessMessage = try await channel.favorite(profile: auth.profile)
                 favoriteSuccess = true
+                favorites.liveTV.append(channel)
                 
-//              TODO: live tv channel
-//                favorites.movies.append(media)
+                guard let index = liveTVVM.categoryChannels.firstIndex(where: { channelVM in
+                    channelVM.value.id == channel.value.id
+                }) else { return }
+                liveTVVM.categoryChannels[index].value.toggleFavorite(to: true)
             }
         } catch {
             print("🚨 Error toggling favorite channel: \(error.localizedDescription)")

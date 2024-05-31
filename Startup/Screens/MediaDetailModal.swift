@@ -269,11 +269,17 @@ struct MediaDetailModal: View {
             }
             .padding(12)
         }
+        .task {
+            do {
+                try await media.getMedia(profile: auth.profile)
+            } catch {
+                print("🚨 Error getting media info: \(error.localizedDescription)")
+            }
+        }
         .background(Color.background)
         .toast(isPresenting: $favoriteSuccess){
             AlertToast(displayMode: .hud, type: .systemImage("star.fill", .white), title: "Saved Favorite", subTitle: favoriteSuccessMessage)
         }
-        
         .toast(isPresenting: $unfavoriteSuccess){
             AlertToast(displayMode: .hud, type: .systemImage("star.slash", .white), title: "Removed Favorite", subTitle: unfavoriteSuccessMessage)
         }

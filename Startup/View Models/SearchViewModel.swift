@@ -24,6 +24,7 @@ class SearchViewModel: ObservableObject {
     @Published var searchQuery = ""
     @Published var type = SearchType.movies
     @Published var media = [MediaViewModel]()
+    @Published var liveTV = [LiveTVChannelViewModel]()
     @Published var fetching = true
     
     private var querySubscriber: AnyCancellable!
@@ -54,7 +55,8 @@ class SearchViewModel: ObservableObject {
         typeSubscriber = typePublisher
             .dropFirst(1)
             .sink(receiveValue: { _ in
-                withAnimation { self.media = [] }
+                self.media = []
+                self.liveTV = []
                 let trimmed = self.searchQuery.trimmed()
                 self.search(withQuery: trimmed, profile: profile)
             })
@@ -72,8 +74,7 @@ extension SearchViewModel {
                 case .tv:
                     try await self.searchTVShows(withQuery: query, profile: profile)
                 case .liveTV:
-                    print("DO SOMETHING!")
-//                    try await self.searchTVShows(withQuery: query, profile: profile)
+                    try await self.searchLiveTVChannels(withQuery: query, profile: profile)
                 }
             } catch {
                 print("🚨 Error searching: \(error.localizedDescription)")
@@ -161,5 +162,37 @@ extension SearchViewModel {
         }
         
         withAnimation { self.media = tvShows.map { MediaViewModel($0, .tv(0, 0, 0)) } }
+    }
+    
+    @MainActor
+    func searchLiveTVChannels(withQuery query: String, profile: Profile?) async throws {
+        let trimmed = query.trimmed()
+        guard trimmed.count > 0 else {
+            withAnimation { self.media = [] }
+            throw "Bad query"
+        }
+        
+        withAnimation { fetching = true }
+        defer {
+            withAnimation { fetching = false }
+        }
+        
+        guard let authToken = K.keychain["authToken"] else { throw "Auth token not found" }
+        
+        let url = URL(string: "\(K.apiURLBase)/info/livetv/search/\(trimmed)?use_lang_limits=0")!
+        
+        var request = URLRequest(url: url)
+        request.setValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization")
+        if let profile {
+            request.setValue("\(profile.profileNumber)", forHTTPHeaderField: "X-API-PROFILE")
+        }
+        let (responseData, _) = try await URLSession.shared.data(for: request)
+        
+        let json = try JSON(data: responseData)
+        let channels = try json["data"].arrayValue.compactMap { jsonC in
+            return try Channel(from: jsonC)
+        }
+        
+        withAnimation { self.liveTV = channels.map { LiveTVChannelViewModel($0) } }
     }
 }
